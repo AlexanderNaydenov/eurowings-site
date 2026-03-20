@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,23 +11,14 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <svg width="32" height="32" viewBox="0 0 32 32" className="text-ew-primary">
-              <circle cx="16" cy="16" r="16" fill="currentColor" />
-              <path
-                d="M8 17.5 L14 12 L26 12 L20 17.5 Z"
-                fill="white"
-                opacity="0.9"
-              />
-              <path
-                d="M10 19.5 L15 15.5 L24 15.5 L19 19.5 Z"
-                fill="white"
-                opacity="0.6"
-              />
-            </svg>
-            <span className="text-xl font-bold tracking-tight text-ew-dark">
-              euro<span className="text-ew-primary">wings</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/eurowings-logo.svg"
+              alt="Eurowings"
+              width={160}
+              height={40}
+              priority
+            />
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

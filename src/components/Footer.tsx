@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const footerLinks = [
   {
@@ -33,15 +34,14 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <div className="mb-4 flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 32 32" className="text-ew-primary">
-                <circle cx="16" cy="16" r="16" fill="currentColor" />
-                <path d="M8 17.5 L14 12 L26 12 L20 17.5 Z" fill="white" opacity="0.9" />
-                <path d="M10 19.5 L15 15.5 L24 15.5 L19 19.5 Z" fill="white" opacity="0.6" />
-              </svg>
-              <span className="text-lg font-bold">
-                euro<span className="text-ew-primary">wings</span>
-              </span>
+            <div className="mb-4">
+              <Image
+                src="/eurowings-logo.svg"
+                alt="Eurowings"
+                width={130}
+                height={32}
+                className="brightness-0 invert"
+              />
             </div>
             <p className="text-sm leading-relaxed text-gray-400">
               Fly smarter. Discover Europe and beyond with affordable fares
