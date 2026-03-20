@@ -46,14 +46,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+interface AliasedBlock extends Record<string, unknown> {
+  offerTitle?: string;
+  destTitle?: string;
+}
+
 function ContentBlockRenderer({ block }: { block: ContentBlock }) {
+  const raw = block as ContentBlock & AliasedBlock;
   switch (block.__typename) {
     case "Promotion":
       return <PromoCard promo={block} />;
     case "FlightOffer":
-      return <FlightOfferCard offer={block} />;
+      return (
+        <FlightOfferCard
+          offer={{ ...block, title: raw.offerTitle ?? block.title }}
+        />
+      );
     case "DestinationPage":
-      return <DestinationCard destination={block} />;
+      return (
+        <DestinationCard
+          destination={{ ...block, title: raw.destTitle ?? block.title }}
+        />
+      );
     case "CtaButton":
       return (
         <Link

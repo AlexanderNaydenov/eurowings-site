@@ -104,14 +104,14 @@ export const GET_LANDING_PAGE = `
           image { url }
         }
         ... on FlightOffer {
-          __typename id title originAirport destinationAirport
+          __typename id offerTitle: title originAirport destinationAirport
           priceFrom travelDate currency linkUrl
         }
         ... on CtaButton {
           __typename id label url variant openInNewTab
         }
         ... on DestinationPage {
-          __typename id title slug startingPrice currency
+          __typename id destTitle: title slug startingPrice currency
           coverImage { url }
           airport { name iataCode }
         }
