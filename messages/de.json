@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "siteName": "Eurowings – Clever fliegen",
+    "siteDescription": "Buche günstige Flüge in Europa und darüber hinaus mit Eurowings. Gute Preise, guter Service.",
+    "destinationsTitle": "Reiseziele – Eurowings",
+    "destinationsDescription": "Entdecke alle Eurowings-Reiseziele in Europa und darüber hinaus.",
+    "faqTitle": "FAQ – Eurowings",
+    "faqDescription": "Antworten auf deine Fragen zu Flügen, Gepäck, Umbuchung und mehr."
+  },
+  "nav": {
+    "home": "Startseite",
+    "destinations": "Reiseziele",
+    "faq": "FAQ",
+    "bookNow": "Jetzt buchen",
+    "toggleMenu": "Menü öffnen",
+    "language": "Sprache"
+  },
+  "footer": {
+    "tagline": "Clever fliegen. Entdecke Europa und die Welt mit attraktiven Preisen und gutem Service.",
+    "booking": "Buchung",
+    "information": "Informationen",
+    "company": "Unternehmen",
+    "flightSearch": "Flugsuche",
+    "dealsOffers": "Angebote & Aktionen",
+    "lowFareCalendar": "Low-Fare-Kalender",
+    "baggage": "Gepäck",
+    "checkIn": "Check-in",
+    "atAirport": "Am Flughafen",
+    "about": "Über Eurowings",
+    "careers": "Karriere",
+    "press": "Presse",
+    "copyright": "© {year} Eurowings. Alle Rechte vorbehalten. Demo-Website mit Next.js & Hygraph.",
+    "privacy": "Datenschutz",
+    "legal": "Impressum",
+    "cookies": "Cookie-Einstellungen"
+  },
+  "home": {
+    "fallbackTitle": "Clever fliegen mit Eurowings",
+    "fallbackSubtitle": "Entdecke Europa und die Welt mit attraktiven Preisen und gutem Service.",
+    "searchFlights": "Flüge suchen",
+    "dealsHeading": "Aktuelle Angebote",
+    "popularHeading": "Beliebte Reiseziele",
+    "whyHeading": "Warum Eurowings?",
+    "readyHeading": "Bereit für dein nächstes Abenteuer?",
+    "readyCms": "Verbinde dein Hygraph-CMS für Live-Inhalte. Setze die Umgebungsvariable HYGRAPH_ENDPOINT.",
+    "featureLowPricesTitle": "Günstige Preise",
+    "featureLowPricesDesc": "Attraktive Tarife ab 29,99 € in Europa und darüber hinaus.",
+    "featureSelectionTitle": "Große Auswahl",
+    "featureSelectionDesc": "Fliege zu über 150 Zielen von Flughäfen in Deutschland aus.",
+    "featureSecureTitle": "Sicher buchen",
+    "featureSecureDesc": "SSL-verschlüsselte Buchung mit PCI-DSS-zertifizierter Zahlung."
+  },
+  "destinations": {
+    "heroTitle": "Unsere Reiseziele",
+    "heroSubtitle": "Entdecke, wohin dich Eurowings bringt. Stöbere in unseren Zielen und plane dein nächstes Abenteuer.",
+    "empty": "Noch keine Reiseziele. Lege welche in Hygraph an, um sie hier zu sehen."
+  },
+  "destination": {
+    "flightsFrom": "Flüge ab",
+    "availableFlights": "Verfügbare Flüge",
+    "youMightAlsoLike": "Das könnte dir auch gefallen"
+  },
+  "faq": {
+    "fallbackTitle": "Häufig gestellte Fragen",
+    "fallbackDescription": "Antworten auf deine Fragen zu Flügen, Gepäck, Umbuchung und mehr.",
+    "empty": "FAQ-Inhalte folgen. Lege Kategorien und Einträge in Hygraph an."
+  },
+  "flightSearch": {
+    "demoOnly": "Nur Demo",
+    "flights": "Flüge",
+    "carHire": "Mietwagen",
+    "hotel": "Hotel",
+    "roundTrip": "Hin- und Rückflug",
+    "oneWay": "Nur Hinflug",
+    "multiCity": "Multi-Stop",
+    "multiCityNote": "Multi-Stop-Buchung ist in dieser Demo vereinfacht dargestellt — im Buchungsflow kannst du weitere Strecken hinzufügen.",
+    "from": "Von",
+    "to": "Nach",
+    "departure": "Hinflug",
+    "return": "Rückflug",
+    "passengersClass": "Passagiere & Klasse",
+    "passengerEco1": "1 Erwachsener, Economy",
+    "passengerEco2": "2 Erwachsene, Economy",
+    "searchFlights": "Flüge suchen",
+    "demoFooter": "Nur Demo — keine Anbindung an eine Buchungsmaschine.",
+    "swapAirports": "Flughäfen tauschen (Demo)"
+  },
+  "newsTicker": {
+    "t1": "Bis zu 20 % Rabatt auf Frühjahrs- und Sommerflüge — jetzt buchen!",
+    "t2": "Neue Route: Düsseldorf → Palma de Mallorca ab 29,99 €",
+    "t3": "Kostenlose Datumsänderung bei allen BIZclass-Buchungen",
+    "t4": "Meilen sammeln bei jedem Flug — jetzt bei myEurowings anmelden",
+    "t5": "Sommerflugplan 2026 verfügbar — sichere dir frühzeitig deinen Platz"
+  },
+  "preview": {
+    "banner": "Vorschaumodus — DRAFT-Inhalte",
+    "exit": "Vorschau beenden"
+  },
+  "flightOffer": {
+    "from": "ab"
+  },
+  "destinationCard": {
+    "flightsFrom": "Flüge ab"
+  }
+}

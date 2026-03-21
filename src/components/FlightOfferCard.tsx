@@ -1,10 +1,16 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
 import { formatPrice } from "@/lib/types";
 import type { FlightOffer } from "@/lib/types";
 
 export default function FlightOfferCard({ offer }: { offer: FlightOffer }) {
   const eid = offer.id;
+  const t = useTranslations("flightOffer");
+  const locale = useLocale();
+
   const dateStr = offer.travelDate
-    ? new Date(offer.travelDate).toLocaleDateString("en-GB", {
+    ? new Date(offer.travelDate).toLocaleDateString(locale === "de" ? "de-DE" : "en-GB", {
         day: "numeric",
         month: "short",
         year: "numeric",
@@ -49,7 +55,7 @@ export default function FlightOfferCard({ offer }: { offer: FlightOffer }) {
         data-hygraph-entry-id={eid}
         data-hygraph-field-api-id="priceFrom"
       >
-        <p className="text-xs text-ew-grey">from</p>
+        <p className="text-xs text-ew-grey">{t("from")}</p>
         <p className="text-xl font-bold text-ew-primary">
           {formatPrice(offer.priceFrom, offer.currency)}
         </p>

@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type TripType = "roundtrip" | "oneway" | "multicity";
 
 export default function FlightSearchPanel() {
   const [tripType, setTripType] = useState<TripType>("roundtrip");
+  const t = useTranslations("flightSearch");
+
+  const tripButtons: { id: TripType; labelKey: "roundTrip" | "oneWay" | "multiCity" }[] = [
+    { id: "roundtrip", labelKey: "roundTrip" },
+    { id: "oneway", labelKey: "oneWay" },
+    { id: "multicity", labelKey: "multiCity" },
+  ];
 
   return (
     <div className="relative z-20 -mt-12 px-4 pb-10 sm:-mt-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-[0_8px_40px_-12px_rgba(0,0,0,0.15)]">
-          {/* Top bar — product area (Eurowings-style) */}
           <div className="flex border-b border-gray-100 bg-gray-50/80">
             <button
               type="button"
@@ -19,33 +26,26 @@ export default function FlightSearchPanel() {
               aria-current="page"
             >
               <PlaneIcon className="h-5 w-5 text-ew-primary" />
-              Flights
+              {t("flights")}
             </button>
             <div
               className="flex flex-1 cursor-not-allowed items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-400"
-              title="Demo only"
+              title={t("demoOnly")}
             >
               <CarIcon className="h-5 w-5" />
-              Car hire
+              {t("carHire")}
             </div>
             <div
               className="hidden flex-1 cursor-not-allowed items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-gray-400 sm:flex"
-              title="Demo only"
+              title={t("demoOnly")}
             >
               <HotelIcon className="h-5 w-5" />
-              Hotel
+              {t("hotel")}
             </div>
           </div>
 
-          {/* Trip type */}
           <div className="flex flex-wrap gap-1 border-b border-gray-100 px-4 py-3 sm:px-5">
-            {(
-              [
-                ["roundtrip", "Round trip"],
-                ["oneway", "One way"],
-                ["multicity", "Multi-city"],
-              ] as const
-            ).map(([id, label]) => (
+            {tripButtons.map(({ id, labelKey }) => (
               <button
                 key={id}
                 type="button"
@@ -56,24 +56,20 @@ export default function FlightSearchPanel() {
                     : "bg-gray-100 text-ew-dark hover:bg-gray-200"
                 }`}
               >
-                {label}
+                {t(labelKey)}
               </button>
             ))}
           </div>
 
           <div className="p-4 sm:p-5">
             {tripType === "multicity" ? (
-              <p className="mb-4 rounded-lg bg-ew-light px-4 py-3 text-sm text-ew-grey">
-                Multi-city booking is shown as a simplified layout in this demo — add more
-                segments in the full booking flow.
-              </p>
+              <p className="mb-4 rounded-lg bg-ew-light px-4 py-3 text-sm text-ew-grey">{t("multiCityNote")}</p>
             ) : null}
 
             <div className="grid gap-4 lg:grid-cols-12 lg:items-end lg:gap-3">
-              {/* From */}
               <label className="group relative lg:col-span-3">
                 <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  From
+                  {t("from")}
                 </span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -88,34 +84,31 @@ export default function FlightSearchPanel() {
                 </div>
               </label>
 
-              {/* Swap — mobile */}
               <div className="flex justify-center py-1 lg:hidden">
                 <button
                   type="button"
                   className="rounded-full border border-gray-200 bg-white p-2 text-gray-500 shadow-sm"
-                  title="Swap airports (demo)"
-                  aria-label="Swap departure and destination"
+                  title={t("swapAirports")}
+                  aria-label={t("swapAirports")}
                 >
                   <SwapIcon className="h-5 w-5 rotate-90" />
                 </button>
               </div>
 
-              {/* Swap — desktop */}
               <div className="hidden h-full items-end justify-center pb-3 lg:col-span-1 lg:flex">
                 <button
                   type="button"
                   className="rounded-full border border-gray-200 bg-white p-2 text-gray-500 shadow-sm transition-colors hover:border-ew-primary hover:text-ew-primary"
-                  title="Swap airports (demo)"
-                  aria-label="Swap departure and destination"
+                  title={t("swapAirports")}
+                  aria-label={t("swapAirports")}
                 >
                   <SwapIcon className="h-5 w-5" />
                 </button>
               </div>
 
-              {/* To */}
               <label className="lg:col-span-3">
                 <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  To
+                  {t("to")}
                 </span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -130,10 +123,9 @@ export default function FlightSearchPanel() {
                 </div>
               </label>
 
-              {/* Departure */}
               <label className="lg:col-span-2">
                 <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Departure
+                  {t("departure")}
                 </span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -148,10 +140,9 @@ export default function FlightSearchPanel() {
                 </div>
               </label>
 
-              {/* Return */}
               <label className={`lg:col-span-2 ${tripType === "oneway" ? "opacity-40" : ""}`}>
                 <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Return
+                  {t("return")}
                 </span>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -168,11 +159,10 @@ export default function FlightSearchPanel() {
                 </div>
               </label>
 
-              {/* Passengers + search */}
               <div className="flex flex-col gap-3 lg:col-span-12 lg:flex-row lg:items-end lg:justify-between lg:gap-4 lg:border-t lg:border-gray-100 lg:pt-4">
                 <label className="lg:max-w-xs lg:flex-1">
                   <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Passengers &amp; class
+                    {t("passengersClass")}
                   </span>
                   <div className="relative">
                     <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -183,8 +173,8 @@ export default function FlightSearchPanel() {
                       defaultValue="eco1"
                       className="w-full cursor-default appearance-none rounded-lg border border-gray-200 bg-white py-3 pl-11 pr-10 text-sm font-medium text-ew-dark outline-none"
                     >
-                      <option value="eco1">1 Adult, Economy</option>
-                      <option value="eco2">2 Adults, Economy</option>
+                      <option value="eco1">{t("passengerEco1")}</option>
+                      <option value="eco2">{t("passengerEco2")}</option>
                     </select>
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                       <ChevronIcon className="h-4 w-4" />
@@ -196,14 +186,12 @@ export default function FlightSearchPanel() {
                   type="button"
                   className="w-full rounded-lg bg-ew-primary px-8 py-3.5 text-base font-bold text-white shadow-md transition-colors hover:bg-ew-primary-dark focus:outline-none focus:ring-2 focus:ring-ew-primary focus:ring-offset-2 lg:w-auto lg:min-w-[200px] lg:self-end"
                 >
-                  Search flights
+                  {t("searchFlights")}
                 </button>
               </div>
             </div>
 
-            <p className="mt-4 text-center text-xs text-gray-400">
-              Demo only — search is not connected to a booking engine.
-            </p>
+            <p className="mt-4 text-center text-xs text-gray-400">{t("demoFooter")}</p>
           </div>
         </div>
       </div>

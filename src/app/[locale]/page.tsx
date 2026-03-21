@@ -1,5 +1,7 @@
 import { draftMode } from "next/headers";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { hygraphFetch } from "@/lib/hygraph";
+import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_HOMEPAGE } from "@/lib/queries";
 import type { Homepage } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
@@ -9,12 +11,15 @@ import DestinationCard from "@/components/DestinationCard";
 import ContentSection from "@/components/ContentSection";
 import PreviewBanner from "@/components/PreviewBanner";
 
-async function getHomepage(isDraft: boolean) {
+type Props = { params: Promise<{ locale: string }> };
+
+async function getHomepage(isDraft: boolean, locale: string) {
   try {
     const stage = isDraft ? "DRAFT" : "PUBLISHED";
+    const locales = hygraphLocales(locale);
     const data = await hygraphFetch<{ homepages: Homepage[] }>(
       GET_HOMEPAGE,
-      { stage },
+      { stage, locales },
       isDraft
     );
     return data.homepages?.[0] || null;
@@ -23,9 +28,13 @@ async function getHomepage(isDraft: boolean) {
   }
 }
 
-export default async function HomePage() {
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("home");
+
   const { isEnabled: isDraft } = draftMode();
-  const page = await getHomepage(isDraft);
+  const page = await getHomepage(isDraft, locale);
 
   return (
     <>
@@ -39,13 +48,11 @@ export default async function HomePage() {
           <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl">
               <h1 className="text-5xl font-extrabold leading-tight text-white md:text-6xl">
-                Fly Smarter with Eurowings
+                {t("fallbackTitle")}
               </h1>
-              <p className="mt-4 text-lg text-white/80 md:text-xl">
-                Discover Europe and beyond with affordable fares and great service.
-              </p>
+              <p className="mt-4 text-lg text-white/80 md:text-xl">{t("fallbackSubtitle")}</p>
               <div className="mt-8 inline-block rounded-full bg-ew-accent px-8 py-3.5 text-base font-bold text-ew-dark shadow-lg">
-                Search Flights
+                {t("searchFlights")}
               </div>
             </div>
           </div>
@@ -56,7 +63,7 @@ export default async function HomePage() {
 
       {page?.promoCards && page.promoCards.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <h2 className="mb-8 text-3xl font-bold text-ew-dark">Current Deals</h2>
+          <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("dealsHeading")}</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {page.promoCards.map((promo) => (
               <PromoCard key={promo.id} promo={promo} />
@@ -68,7 +75,7 @@ export default async function HomePage() {
       {page?.featuredDestinations && page.featuredDestinations.length > 0 && (
         <section className="bg-white py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-ew-dark">Popular Destinations</h2>
+            <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("popularHeading")}</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {page.featuredDestinations.map((dest) => (
                 <DestinationCard key={dest.id} destination={dest} />
@@ -91,12 +98,12 @@ export default async function HomePage() {
       {!page && (
         <>
           <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-ew-dark">Why Fly with Eurowings?</h2>
+            <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("whyHeading")}</h2>
             <div className="grid gap-6 sm:grid-cols-3">
               {[
-                { title: "Low Prices", desc: "Affordable fares starting from \u20ac29.99 across Europe and beyond." },
-                { title: "Great Selection", desc: "Fly to 150+ destinations from airports across Germany." },
-                { title: "Safe & Secure", desc: "SSL encrypted booking with PCI DSS certified payment." },
+                { title: t("featureLowPricesTitle"), desc: t("featureLowPricesDesc") },
+                { title: t("featureSelectionTitle"), desc: t("featureSelectionDesc") },
+                { title: t("featureSecureTitle"), desc: t("featureSecureDesc") },
               ].map((item) => (
                 <div key={item.title} className="rounded-2xl bg-white p-6 text-center shadow-sm">
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-ew-primary/10">
@@ -112,11 +119,8 @@ export default async function HomePage() {
           </section>
           <section className="bg-white py-16">
             <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-              <h2 className="text-3xl font-bold text-ew-dark">Ready to Explore?</h2>
-              <p className="mx-auto mt-4 max-w-xl text-ew-grey">
-                Connect your Hygraph CMS to see live content. Set the
-                HYGRAPH_ENDPOINT environment variable to get started.
-              </p>
+              <h2 className="text-3xl font-bold text-ew-dark">{t("readyHeading")}</h2>
+              <p className="mx-auto mt-4 max-w-xl text-ew-grey">{t("readyCms")}</p>
             </div>
           </section>
         </>

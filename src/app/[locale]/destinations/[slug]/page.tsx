@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
 import Image from "next/image";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
 import { hygraphFetch } from "@/lib/hygraph";
+import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_DESTINATION_PAGE, GET_ALL_DESTINATION_SLUGS } from "@/lib/queries";
 import type { DestinationPage } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
@@ -10,18 +13,18 @@ import FlightOfferCard from "@/components/FlightOfferCard";
 import ContentSection from "@/components/ContentSection";
 import DestinationCard from "@/components/DestinationCard";
 import PreviewBanner from "@/components/PreviewBanner";
-import type { Metadata } from "next";
 
-interface Props {
-  params: Promise<{ slug: string }>;
-}
+type Props = {
+  params: Promise<{ locale: string; slug: string }>;
+};
 
-async function getPage(slug: string, isDraft: boolean) {
+async function getPage(slug: string, isDraft: boolean, locale: string) {
   try {
     const stage = isDraft ? "DRAFT" : "PUBLISHED";
+    const locales = hygraphLocales(locale);
     const data = await hygraphFetch<{ destinationPage: DestinationPage | null }>(
       GET_DESTINATION_PAGE,
-      { slug, stage },
+      { slug, stage, locales },
       isDraft
     );
     return data.destinationPage;
@@ -35,15 +38,17 @@ export async function generateStaticParams() {
     const data = await hygraphFetch<{ destinationPages: { slug: string }[] }>(
       GET_ALL_DESTINATION_SLUGS
     );
-    return (data.destinationPages || []).map((p) => ({ slug: p.slug }));
+    const slugs = (data.destinationPages || []).map((p) => p.slug);
+    const locales = ["en", "de"] as const;
+    return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
   } catch {
     return [];
   }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const page = await getPage(slug, false);
+  const { slug, locale } = await params;
+  const page = await getPage(slug, false, locale);
   return {
     title: page?.seo?.metaTitle || `${page?.title} – Eurowings`,
     description: page?.seo?.metaDescription,
@@ -51,9 +56,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function DestinationDetail({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("destination");
+
   const { isEnabled: isDraft } = draftMode();
-  const page = await getPage(slug, isDraft);
+  const page = await getPage(slug, isDraft, locale);
   if (!page) notFound();
 
   const eid = page.id;
@@ -97,7 +105,7 @@ export default async function DestinationDetail({ params }: Props) {
               data-hygraph-entry-id={eid}
               data-hygraph-field-api-id="startingPrice"
             >
-              Flights from{" "}
+              {t("flightsFrom")}{" "}
               <span className="text-2xl font-bold text-ew-accent">
                 {formatPrice(page.startingPrice, page.currency)}*
               </span>
@@ -131,7 +139,7 @@ export default async function DestinationDetail({ params }: Props) {
 
         {page.flightOffers && page.flightOffers.length > 0 && (
           <section className="mb-12">
-            <h2 className="mb-6 text-2xl font-bold text-ew-dark">Available Flights</h2>
+            <h2 className="mb-6 text-2xl font-bold text-ew-dark">{t("availableFlights")}</h2>
             <div className="grid gap-3 md:grid-cols-2">
               {page.flightOffers.map((offer) => (
                 <FlightOfferCard key={offer.id} offer={offer} />
@@ -150,7 +158,7 @@ export default async function DestinationDetail({ params }: Props) {
 
         {page.relatedDestinations && page.relatedDestinations.length > 0 && (
           <section className="mb-12">
-            <h2 className="mb-6 text-2xl font-bold text-ew-dark">You Might Also Like</h2>
+            <h2 className="mb-6 text-2xl font-bold text-ew-dark">{t("youMightAlsoLike")}</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {page.relatedDestinations.map((dest) => (
                 <DestinationCard key={dest.id} destination={dest} />

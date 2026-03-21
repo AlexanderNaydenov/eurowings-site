@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { Promotion } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 
 function CardInner({ promo }: { promo: Promotion }) {
   const eid = promo.id;
+  const t = useTranslations("flightOffer");
 
   return (
     <>
@@ -33,7 +37,7 @@ function CardInner({ promo }: { promo: Promotion }) {
             data-hygraph-entry-id={eid}
             data-hygraph-field-api-id="priceFrom"
           >
-            from {formatPrice(promo.priceFrom, promo.currency)}
+            {t("from")} {formatPrice(promo.priceFrom, promo.currency)}
           </div>
         )}
       </div>
@@ -74,6 +78,13 @@ export default function PromoCard({ promo }: { promo: Promotion }) {
     "group flex flex-col overflow-hidden rounded-2xl bg-white shadow-md transition-shadow hover:shadow-xl";
 
   if (promo.linkUrl) {
+    if (/^https?:\/\//i.test(promo.linkUrl)) {
+      return (
+        <a href={promo.linkUrl} className={className}>
+          <CardInner promo={promo} />
+        </a>
+      );
+    }
     return (
       <Link href={promo.linkUrl} className={className}>
         <CardInner promo={promo} />

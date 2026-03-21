@@ -1,6 +1,6 @@
 export const GET_HOMEPAGE = `
-  query GetHomepage($stage: Stage! = PUBLISHED) {
-    homepages(first: 1, stage: $stage) {
+  query GetHomepage($stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    homepages(first: 1, stage: $stage, locales: $locales) {
       id
       title
       slug
@@ -28,8 +28,8 @@ export const GET_HOMEPAGE = `
 `;
 
 export const GET_DESTINATION_PAGE = `
-  query GetDestinationPage($slug: String!, $stage: Stage! = PUBLISHED) {
-    destinationPage(where: { slug: $slug }, stage: $stage) {
+  query GetDestinationPage($slug: String!, $stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    destinationPage(where: { slug: $slug }, stage: $stage, locales: $locales) {
       id
       title
       slug
@@ -57,15 +57,15 @@ export const GET_DESTINATION_PAGE = `
 
 export const GET_ALL_DESTINATION_SLUGS = `
   query GetAllDestinationSlugs {
-    destinationPages(stage: PUBLISHED, first: 100) {
+    destinationPages(stage: PUBLISHED, first: 100, locales: [en]) {
       slug
     }
   }
 `;
 
 export const GET_ALL_DESTINATIONS = `
-  query GetAllDestinations($stage: Stage! = PUBLISHED) {
-    destinationPages(stage: $stage, first: 50) {
+  query GetAllDestinations($stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    destinationPages(stage: $stage, first: 50, locales: $locales) {
       id title slug startingPrice currency
       coverImage { url }
       airport { id name iataCode city country }
@@ -74,12 +74,12 @@ export const GET_ALL_DESTINATIONS = `
 `;
 
 export const GET_FAQ_PAGE = `
-  query GetFaqPage($stage: Stage! = PUBLISHED) {
-    faqPages(first: 1, stage: $stage) {
+  query GetFaqPage($stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    faqPages(first: 1, stage: $stage, locales: $locales) {
       id title description
       seo { metaTitle metaDescription }
     }
-    faqCategories(stage: $stage) {
+    faqCategories(stage: $stage, locales: $locales) {
       id title slug description icon
       faqItems(orderBy: sortOrder_ASC) {
         id question answer { html } sortOrder
@@ -89,8 +89,8 @@ export const GET_FAQ_PAGE = `
 `;
 
 export const GET_LANDING_PAGE = `
-  query GetLandingPage($slug: String!, $stage: Stage! = PUBLISHED) {
-    landingPage(where: { slug: $slug }, stage: $stage) {
+  query GetLandingPage($slug: String!, $stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    landingPage(where: { slug: $slug }, stage: $stage, locales: $locales) {
       id
       title
       slug
@@ -128,7 +128,7 @@ export const GET_LANDING_PAGE = `
 
 export const GET_ALL_LANDING_PAGE_SLUGS = `
   query GetAllLandingPageSlugs {
-    landingPages(stage: PUBLISHED, first: 100) {
+    landingPages(stage: PUBLISHED, first: 100, locales: [en]) {
       slug
     }
   }

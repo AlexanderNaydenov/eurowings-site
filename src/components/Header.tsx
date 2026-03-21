@@ -1,17 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const t = useTranslations("nav");
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  const nav = [
+    { href: "/", key: "home" as const },
+    { href: "/destinations", key: "destinations" as const },
+    { href: "/faq", key: "faq" as const },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center">
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link href="/" className="flex shrink-0 items-center">
             <Image
               src="/eurowings-logo.svg"
               alt="Eurowings"
@@ -21,35 +31,51 @@ export default function Header() {
             />
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            {[
-              { href: "/", label: "Home" },
-              { href: "/destinations", label: "Destinations" },
-              { href: "/faq", label: "FAQ" },
-            ].map((link) => (
+          <nav className="hidden items-center gap-6 md:flex">
+            {nav.map((item) => (
               <Link
-                key={link.href}
-                href={link.href}
+                key={item.href}
+                href={item.href}
                 className="text-sm font-medium text-ew-dark transition-colors hover:text-ew-primary"
               >
-                {link.label}
+                {t(item.key)}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden items-center gap-4 md:flex">
+            <div className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 px-1 py-0.5 text-xs font-semibold">
+              <Link
+                href={pathname}
+                locale="en"
+                className={`rounded-full px-2.5 py-1 transition-colors ${
+                  locale === "en" ? "bg-white text-ew-primary shadow-sm" : "text-ew-grey hover:text-ew-dark"
+                }`}
+              >
+                EN
+              </Link>
+              <Link
+                href={pathname}
+                locale="de"
+                className={`rounded-full px-2.5 py-1 transition-colors ${
+                  locale === "de" ? "bg-white text-ew-primary shadow-sm" : "text-ew-grey hover:text-ew-dark"
+                }`}
+              >
+                DE
+              </Link>
+            </div>
             <Link
               href="/"
               className="rounded-full bg-ew-primary px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ew-primary-dark"
             >
-              Book&nbsp;Now
+              {t("bookNow")}
             </Link>
           </div>
 
           <button
             className="relative h-6 w-7 md:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            aria-label={t("toggleMenu")}
           >
             <span
               className={`absolute left-0 block h-0.5 w-full bg-ew-dark transition-all duration-300 ${
@@ -76,18 +102,32 @@ export default function Header() {
         }`}
       >
         <nav className="flex flex-col gap-1 p-4">
-          {[
-            { href: "/", label: "Home" },
-            { href: "/destinations", label: "Destinations" },
-            { href: "/faq", label: "FAQ" },
-          ].map((link) => (
+          <div className="mb-2 flex justify-center gap-2">
             <Link
-              key={link.href}
-              href={link.href}
+              href={pathname}
+              locale="en"
+              className="rounded-full border px-4 py-1.5 text-sm font-semibold"
+              onClick={() => setMenuOpen(false)}
+            >
+              EN
+            </Link>
+            <Link
+              href={pathname}
+              locale="de"
+              className="rounded-full border px-4 py-1.5 text-sm font-semibold"
+              onClick={() => setMenuOpen(false)}
+            >
+              DE
+            </Link>
+          </div>
+          {nav.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
               className="rounded-lg px-3 py-2.5 font-medium text-ew-dark hover:bg-ew-light"
               onClick={() => setMenuOpen(false)}
             >
-              {link.label}
+              {t(item.key)}
             </Link>
           ))}
           <Link
@@ -95,7 +135,7 @@ export default function Header() {
             className="mt-2 rounded-full bg-ew-primary px-5 py-2.5 text-center font-semibold text-white"
             onClick={() => setMenuOpen(false)}
           >
-            Book Now
+            {t("bookNow")}
           </Link>
         </nav>
       </div>

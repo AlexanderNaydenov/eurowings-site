@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "siteName": "Eurowings – Fly Smarter",
+    "siteDescription": "Book affordable flights across Europe and beyond with Eurowings. Great fares, great service.",
+    "destinationsTitle": "Destinations – Eurowings",
+    "destinationsDescription": "Explore all Eurowings destinations across Europe and beyond.",
+    "faqTitle": "FAQ – Eurowings",
+    "faqDescription": "Find answers to your questions about flights, baggage, rebooking, and more."
+  },
+  "nav": {
+    "home": "Home",
+    "destinations": "Destinations",
+    "faq": "FAQ",
+    "bookNow": "Book now",
+    "toggleMenu": "Toggle menu",
+    "language": "Language"
+  },
+  "footer": {
+    "tagline": "Fly smarter. Discover Europe and beyond with affordable fares and great service.",
+    "booking": "Booking",
+    "information": "Information",
+    "company": "Company",
+    "flightSearch": "Flight search",
+    "dealsOffers": "Deals & offers",
+    "lowFareCalendar": "Low fare calendar",
+    "baggage": "Baggage",
+    "checkIn": "Check-in",
+    "atAirport": "At the airport",
+    "about": "About Eurowings",
+    "careers": "Careers",
+    "press": "Press",
+    "copyright": "© {year} Eurowings. All rights reserved. Demo site built with Next.js & Hygraph.",
+    "privacy": "Privacy policy",
+    "legal": "Legal notice",
+    "cookies": "Cookie settings"
+  },
+  "home": {
+    "fallbackTitle": "Fly smarter with Eurowings",
+    "fallbackSubtitle": "Discover Europe and beyond with affordable fares and great service.",
+    "searchFlights": "Search flights",
+    "dealsHeading": "Current deals",
+    "popularHeading": "Popular destinations",
+    "whyHeading": "Why fly with Eurowings?",
+    "readyHeading": "Ready to explore?",
+    "readyCms": "Connect your Hygraph CMS to see live content. Set the HYGRAPH_ENDPOINT environment variable to get started.",
+    "featureLowPricesTitle": "Low prices",
+    "featureLowPricesDesc": "Affordable fares starting from €29.99 across Europe and beyond.",
+    "featureSelectionTitle": "Great selection",
+    "featureSelectionDesc": "Fly to 150+ destinations from airports across Germany.",
+    "featureSecureTitle": "Safe & secure",
+    "featureSecureDesc": "SSL encrypted booking with PCI DSS certified payment."
+  },
+  "destinations": {
+    "heroTitle": "Our destinations",
+    "heroSubtitle": "Discover where Eurowings can take you. Browse our destinations and find your next adventure.",
+    "empty": "No destinations available yet. Add some in Hygraph to see them here."
+  },
+  "destination": {
+    "flightsFrom": "Flights from",
+    "availableFlights": "Available flights",
+    "youMightAlsoLike": "You might also like"
+  },
+  "faq": {
+    "fallbackTitle": "Frequently asked questions",
+    "fallbackDescription": "Find answers to all your questions about flights, baggage, rebooking, and more.",
+    "empty": "FAQ content coming soon. Add FAQ categories and items in Hygraph."
+  },
+  "flightSearch": {
+    "demoOnly": "Demo only",
+    "flights": "Flights",
+    "carHire": "Car hire",
+    "hotel": "Hotel",
+    "roundTrip": "Round trip",
+    "oneWay": "One way",
+    "multiCity": "Multi-city",
+    "multiCityNote": "Multi-city booking is shown as a simplified layout in this demo — add more segments in the full booking flow.",
+    "from": "From",
+    "to": "To",
+    "departure": "Departure",
+    "return": "Return",
+    "passengersClass": "Passengers & class",
+    "passengerEco1": "1 adult, economy",
+    "passengerEco2": "2 adults, economy",
+    "searchFlights": "Search flights",
+    "demoFooter": "Demo only — search is not connected to a booking engine.",
+    "swapAirports": "Swap airports (demo)"
+  },
+  "newsTicker": {
+    "t1": "Up to 20% off spring and summer flights — book now!",
+    "t2": "New route: Düsseldorf → Palma de Mallorca from €29.99",
+    "t3": "Free date change on all BIZclass bookings",
+    "t4": "Earn miles with every flight — join myEurowings today",
+    "t5": "Summer 2026 schedule now available — secure your seat early"
+  },
+  "preview": {
+    "banner": "Preview mode — viewing DRAFT content",
+    "exit": "Exit preview"
+  },
+  "flightOffer": {
+    "from": "from"
+  },
+  "destinationCard": {
+    "flightsFrom": "Flights from"
+  }
+}

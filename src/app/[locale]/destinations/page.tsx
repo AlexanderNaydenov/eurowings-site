@@ -1,22 +1,31 @@
 import { draftMode } from "next/headers";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
 import { hygraphFetch } from "@/lib/hygraph";
+import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_ALL_DESTINATIONS } from "@/lib/queries";
 import type { DestinationPage } from "@/lib/types";
 import DestinationCard from "@/components/DestinationCard";
 import PreviewBanner from "@/components/PreviewBanner";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Destinations – Eurowings",
-  description: "Explore all Eurowings destinations across Europe and beyond.",
-};
+type Props = { params: Promise<{ locale: string }> };
 
-async function getDestinations(isDraft: boolean) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  return {
+    title: t("destinationsTitle"),
+    description: t("destinationsDescription"),
+  };
+}
+
+async function getDestinations(isDraft: boolean, locale: string) {
   try {
     const stage = isDraft ? "DRAFT" : "PUBLISHED";
+    const locales = hygraphLocales(locale);
     const data = await hygraphFetch<{ destinationPages: DestinationPage[] }>(
       GET_ALL_DESTINATIONS,
-      { stage },
+      { stage, locales },
       isDraft
     );
     return data.destinationPages || [];
@@ -25,9 +34,13 @@ async function getDestinations(isDraft: boolean) {
   }
 }
 
-export default async function DestinationsPage() {
+export default async function DestinationsPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("destinations");
+
   const { isEnabled: isDraft } = draftMode();
-  const destinations = await getDestinations(isDraft);
+  const destinations = await getDestinations(isDraft, locale);
 
   return (
     <>
@@ -35,13 +48,8 @@ export default async function DestinationsPage() {
 
       <section className="bg-gradient-to-br from-ew-primary-dark to-ew-primary py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-extrabold text-white md:text-5xl">
-            Our Destinations
-          </h1>
-          <p className="mt-4 max-w-xl text-lg text-white/80">
-            Discover where Eurowings can take you. Browse our destinations
-            and find your next adventure.
-          </p>
+          <h1 className="text-4xl font-extrabold text-white md:text-5xl">{t("heroTitle")}</h1>
+          <p className="mt-4 max-w-xl text-lg text-white/80">{t("heroSubtitle")}</p>
         </div>
       </section>
 
@@ -54,10 +62,7 @@ export default async function DestinationsPage() {
           </div>
         ) : (
           <div className="py-20 text-center">
-            <p className="text-lg text-ew-grey">
-              No destinations available yet. Add some in Hygraph to see them
-              here.
-            </p>
+            <p className="text-lg text-ew-grey">{t("empty")}</p>
           </div>
         )}
       </section>

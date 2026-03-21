@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
+import { setRequestLocale } from "next-intl/server";
+import type { Metadata } from "next";
 import { hygraphFetch } from "@/lib/hygraph";
+import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_LANDING_PAGE, GET_ALL_LANDING_PAGE_SLUGS } from "@/lib/queries";
 import type { LandingPage, ContentBlock } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
@@ -10,19 +13,19 @@ import PromoCard from "@/components/PromoCard";
 import FlightOfferCard from "@/components/FlightOfferCard";
 import DestinationCard from "@/components/DestinationCard";
 import PreviewBanner from "@/components/PreviewBanner";
-import Link from "next/link";
-import type { Metadata } from "next";
+import { Link } from "@/i18n/navigation";
 
-interface Props {
-  params: Promise<{ slug: string }>;
-}
+type Props = {
+  params: Promise<{ locale: string; slug: string }>;
+};
 
-async function getPage(slug: string, isDraft: boolean) {
+async function getPage(slug: string, isDraft: boolean, locale: string) {
   try {
     const stage = isDraft ? "DRAFT" : "PUBLISHED";
+    const locales = hygraphLocales(locale);
     const data = await hygraphFetch<{ landingPage: LandingPage | null }>(
       GET_LANDING_PAGE,
-      { slug, stage },
+      { slug, stage, locales },
       isDraft
     );
     return data.landingPage;
@@ -36,15 +39,17 @@ export async function generateStaticParams() {
     const data = await hygraphFetch<{ landingPages: { slug: string }[] }>(
       GET_ALL_LANDING_PAGE_SLUGS
     );
-    return (data.landingPages || []).map((p) => ({ slug: p.slug }));
+    const slugs = (data.landingPages || []).map((p) => p.slug);
+    const locales = ["en", "de"] as const;
+    return locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })));
   } catch {
     return [];
   }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const page = await getPage(slug, false);
+  const { slug, locale } = await params;
+  const page = await getPage(slug, false, locale);
   return {
     title: page?.seo?.metaTitle || `${page?.title} – Eurowings`,
     description: page?.seo?.metaDescription,
@@ -63,43 +68,57 @@ function ContentBlockRenderer({ block }: { block: ContentBlock }) {
       return <PromoCard promo={block} />;
     case "FlightOffer":
       return (
-        <FlightOfferCard
-          offer={{ ...block, title: raw.offerTitle ?? block.title }}
-        />
+        <FlightOfferCard offer={{ ...block, title: raw.offerTitle ?? block.title }} />
       );
     case "DestinationPage":
       return (
-        <DestinationCard
-          destination={{ ...block, title: raw.destTitle ?? block.title }}
-        />
+        <DestinationCard destination={{ ...block, title: raw.destTitle ?? block.title }} />
       );
-    case "CtaButton":
+    case "CtaButton": {
+      const isExternal = /^https?:\/\//i.test(block.url);
+      const className = `inline-block rounded-full px-8 py-3.5 text-center font-semibold transition-colors ${
+        block.variant === "PRIMARY"
+          ? "bg-ew-primary text-white hover:bg-ew-primary-dark"
+          : block.variant === "SECONDARY"
+          ? "bg-ew-accent text-ew-dark hover:bg-amber-400"
+          : "border-2 border-ew-primary text-ew-primary hover:bg-ew-primary hover:text-white"
+      }`;
+      if (isExternal) {
+        return (
+          <a
+            href={block.url}
+            target={block.openInNewTab ? "_blank" : undefined}
+            rel={block.openInNewTab ? "noopener noreferrer" : undefined}
+            className={className}
+            data-hygraph-entry-id={block.id}
+            data-hygraph-field-api-id="label"
+          >
+            {block.label}
+          </a>
+        );
+      }
       return (
         <Link
           href={block.url}
-          target={block.openInNewTab ? "_blank" : undefined}
-          className={`inline-block rounded-full px-8 py-3.5 text-center font-semibold transition-colors ${
-            block.variant === "PRIMARY"
-              ? "bg-ew-primary text-white hover:bg-ew-primary-dark"
-              : block.variant === "SECONDARY"
-              ? "bg-ew-accent text-ew-dark hover:bg-amber-400"
-              : "border-2 border-ew-primary text-ew-primary hover:bg-ew-primary hover:text-white"
-          }`}
+          className={className}
           data-hygraph-entry-id={block.id}
           data-hygraph-field-api-id="label"
         >
           {block.label}
         </Link>
       );
+    }
     default:
       return null;
   }
 }
 
 export default async function LandingPageRoute({ params }: Props) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  setRequestLocale(locale);
+
   const { isEnabled: isDraft } = draftMode();
-  const page = await getPage(slug, isDraft);
+  const page = await getPage(slug, isDraft, locale);
   if (!page) notFound();
 
   return (

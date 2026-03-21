@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { DestinationPage } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 
@@ -9,6 +12,7 @@ export default function DestinationCard({
   destination: DestinationPage;
 }) {
   const eid = destination.id;
+  const t = useTranslations("destinationCard");
 
   return (
     <Link
@@ -53,7 +57,7 @@ export default function DestinationCard({
             data-hygraph-entry-id={eid}
             data-hygraph-field-api-id="startingPrice"
           >
-            Flights from{" "}
+            {t("flightsFrom")}{" "}
             <span className="text-base font-bold text-ew-accent">
               {formatPrice(destination.startingPrice, destination.currency)}
             </span>

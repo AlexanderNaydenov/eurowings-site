@@ -1,5 +1,5 @@
-import Link from "next/link";
 import type { HeroSection } from "@/lib/types";
+import { Link } from "@/i18n/navigation";
 
 interface Props {
   hero: HeroSection;
@@ -11,10 +11,11 @@ export default function HeroBanner({ hero, compact }: Props) {
   const height = compact ? "h-72 md:h-80" : "h-[28rem] md:h-[34rem]";
   const eid = hero.id;
 
+  const ctaClass =
+    "mt-8 inline-block rounded-full bg-ew-accent px-8 py-3.5 text-base font-bold text-ew-dark shadow-lg transition-transform hover:scale-105";
+
   return (
-    <section
-      className={`relative flex items-center ${height} overflow-hidden bg-ew-dark`}
-    >
+    <section className={`relative flex items-center ${height} overflow-hidden bg-ew-dark`}>
       {bgUrl && (
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -49,17 +50,28 @@ export default function HeroBanner({ hero, compact }: Props) {
               {hero.subheading}
             </p>
           )}
-          {hero.cta && (
-            <Link
-              href={hero.cta.url}
-              target={hero.cta.openInNewTab ? "_blank" : undefined}
-              className="mt-8 inline-block rounded-full bg-ew-accent px-8 py-3.5 text-base font-bold text-ew-dark shadow-lg transition-transform hover:scale-105"
-              data-hygraph-entry-id={hero.cta.id}
-              data-hygraph-field-api-id="label"
-            >
-              {hero.cta.label}
-            </Link>
-          )}
+          {hero.cta?.url &&
+            (/^https?:\/\//i.test(hero.cta.url) ? (
+              <a
+                href={hero.cta.url}
+                target={hero.cta.openInNewTab ? "_blank" : undefined}
+                rel={hero.cta.openInNewTab ? "noopener noreferrer" : undefined}
+                className={ctaClass}
+                data-hygraph-entry-id={hero.cta.id}
+                data-hygraph-field-api-id="label"
+              >
+                {hero.cta.label}
+              </a>
+            ) : (
+              <Link
+                href={hero.cta.url}
+                className={ctaClass}
+                data-hygraph-entry-id={hero.cta.id}
+                data-hygraph-field-api-id="label"
+              >
+                {hero.cta.label}
+              </Link>
+            ))}
         </div>
       </div>
     </section>
