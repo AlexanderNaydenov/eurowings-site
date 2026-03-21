@@ -4,6 +4,7 @@ import { hygraphFetch } from "@/lib/hygraph";
 import { GET_LANDING_PAGE, GET_ALL_LANDING_PAGE_SLUGS } from "@/lib/queries";
 import type { LandingPage, ContentBlock } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
+import FlightSearchPanel from "@/components/FlightSearchPanel";
 import ContentSection from "@/components/ContentSection";
 import PromoCard from "@/components/PromoCard";
 import FlightOfferCard from "@/components/FlightOfferCard";
@@ -106,6 +107,8 @@ export default async function LandingPageRoute({ params }: Props) {
       {isDraft && <PreviewBanner />}
 
       {page.heroBanner && <HeroBanner hero={page.heroBanner} compact />}
+
+      <FlightSearchPanel />
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {page.contentBlocks && page.contentBlocks.length > 0 && (

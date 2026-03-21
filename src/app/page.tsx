@@ -3,6 +3,7 @@ import { hygraphFetch } from "@/lib/hygraph";
 import { GET_HOMEPAGE } from "@/lib/queries";
 import type { Homepage } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
+import FlightSearchPanel from "@/components/FlightSearchPanel";
 import PromoCard from "@/components/PromoCard";
 import DestinationCard from "@/components/DestinationCard";
 import ContentSection from "@/components/ContentSection";
@@ -50,6 +51,8 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <FlightSearchPanel />
 
       {page?.promoCards && page.promoCards.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
