@@ -5,6 +5,7 @@ import { hygraphFetch } from "@/lib/hygraph";
 import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_FAQ_PAGE } from "@/lib/queries";
 import type { FaqPageData, FaqCategory } from "@/lib/types";
+import { groupFaqItemsByCategory } from "@/lib/faq-group";
 import FaqAccordion from "@/components/FaqAccordion";
 import PreviewBanner from "@/components/PreviewBanner";
 
@@ -23,14 +24,14 @@ async function getFaqData(isDraft: boolean, locale: string) {
   try {
     const stage = isDraft ? "DRAFT" : "PUBLISHED";
     const locales = hygraphLocales(locale);
-    const data = await hygraphFetch<{
-      faqPages: FaqPageData[];
-      faqCategories: FaqCategory[];
-    }>(GET_FAQ_PAGE, { stage, locales }, isDraft);
-    return {
-      page: data.faqPages?.[0] || null,
-      categories: data.faqCategories || [],
-    };
+    const data = await hygraphFetch<{ faqPages: FaqPageData[] }>(
+      GET_FAQ_PAGE,
+      { stage, locales },
+      isDraft
+    );
+    const page = data.faqPages?.[0] || null;
+    const categories = groupFaqItemsByCategory(page?.faqItems || []);
+    return { page, categories };
   } catch {
     return { page: null, categories: [] };
   }

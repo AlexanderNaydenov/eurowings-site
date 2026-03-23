@@ -78,11 +78,11 @@ export const GET_FAQ_PAGE = `
     faqPages(first: 1, stage: $stage, locales: $locales) {
       id title description
       seo { metaTitle metaDescription }
-    }
-    faqCategories(stage: $stage, locales: $locales) {
-      id title slug description icon
       faqItems(orderBy: sortOrder_ASC) {
         id question answer { html } sortOrder
+        category {
+          id title slug description icon
+        }
       }
     }
   }

@@ -126,6 +126,8 @@ export interface FaqItem {
   question: string;
   answer?: { html: string };
   sortOrder?: number;
+  /** Still stored on the item in Hygraph; used to group items from FaqPage.faqItems */
+  category?: Pick<FaqCategory, "id" | "title" | "slug" | "description" | "icon"> | null;
 }
 
 export interface FaqCategory {
@@ -142,6 +144,8 @@ export interface FaqPageData {
   title: string;
   description?: string;
   seo?: SeoMetadata;
+  /** Linked on FaqPage in Hygraph (ordered via sortOrder on items) */
+  faqItems?: FaqItem[];
 }
 
 export type ContentBlock =

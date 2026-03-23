@@ -35,3 +35,7 @@ For models without a public slug segment (e.g. singleton FAQ page), either:
 - add **`&model=FaqPage`**.
 
 After deploying, open the FAQ entry in Studio and use **View logs** on the preview request if anything still fails (401 = secret; 500 = check server logs).
+
+## FAQ content model
+
+**FAQ items** are linked on the **Faq page** entry (`faqItems`). Each item still has a **category** for accordion grouping in the app. New items must be added to the page’s `FAQ items` list in Studio to appear on `/faq`.
