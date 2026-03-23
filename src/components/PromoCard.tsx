@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { normalizeInternalHref } from "@/lib/internal-link";
 import type { Promotion } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 
@@ -86,7 +87,7 @@ export default function PromoCard({ promo }: { promo: Promotion }) {
       );
     }
     return (
-      <Link href={promo.linkUrl} className={className}>
+      <Link href={normalizeInternalHref(promo.linkUrl)} className={className}>
         <CardInner promo={promo} />
       </Link>
     );

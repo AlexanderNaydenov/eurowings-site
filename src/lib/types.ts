@@ -20,6 +20,19 @@ export interface HeroSection {
   cta?: CtaButton;
 }
 
+/** Book & travel quick link (baggage, check-in, etc.) — Hygraph Service model */
+export interface Service {
+  id: string;
+  __typename?: "Service";
+  title: string;
+  teaser?: string;
+  iconKey?: string;
+  linkUrl?: string;
+  linkLabel?: string;
+  sortOrder?: number;
+  image?: Asset;
+}
+
 export interface Promotion {
   id: string;
   __typename?: "Promotion";
@@ -119,6 +132,7 @@ export interface Homepage {
   contentSections?: ContentSectionData[];
   legalNotes?: Disclaimer[];
   featuredDestinations?: DestinationPage[];
+  services?: Service[];
 }
 
 export interface FaqItem {
@@ -152,7 +166,8 @@ export type ContentBlock =
   | (Promotion & { __typename: "Promotion" })
   | (FlightOffer & { __typename: "FlightOffer" })
   | (CtaButton & { __typename: "CtaButton" })
-  | (DestinationPage & { __typename: "DestinationPage" });
+  | (DestinationPage & { __typename: "DestinationPage" })
+  | (Service & { __typename: "Service" });
 
 export interface LandingPage {
   id: string;

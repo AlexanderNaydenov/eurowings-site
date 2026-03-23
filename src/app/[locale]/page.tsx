@@ -7,6 +7,7 @@ import type { Homepage } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
 import FlightSearchPanel from "@/components/FlightSearchPanel";
 import PromoCard from "@/components/PromoCard";
+import ServiceCard from "@/components/ServiceCard";
 import DestinationCard from "@/components/DestinationCard";
 import ContentSection from "@/components/ContentSection";
 import PreviewBanner from "@/components/PreviewBanner";
@@ -60,6 +61,19 @@ export default async function HomePage({ params }: Props) {
       )}
 
       <FlightSearchPanel />
+
+      {page?.services && page.services.length > 0 && (
+        <section className="border-y border-gray-100 bg-white py-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("servicesHeading")}</h2>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {page.services.map((svc) => (
+                <ServiceCard key={svc.id} service={svc} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {page?.promoCards && page.promoCards.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

@@ -16,6 +16,10 @@ export const GET_HOMEPAGE = `
         id heading description priceFrom currency linkUrl linkLabel
         image { url }
       }
+      services(orderBy: sortOrder_ASC, first: 20) {
+        id title teaser iconKey linkUrl linkLabel sortOrder
+        image { url }
+      }
       contentSections { id heading body { html } imageUrl }
       legalNotes { id title identifier content { html } }
       featuredDestinations {
@@ -119,6 +123,10 @@ export const GET_LANDING_PAGE = `
           __typename id destTitle: title slug startingPrice currency
           coverImage { url }
           airport { id name iataCode }
+        }
+        ... on Service {
+          __typename id title teaser iconKey linkUrl linkLabel sortOrder
+          image { url }
         }
       }
       legalNotes { id title identifier content { html } }

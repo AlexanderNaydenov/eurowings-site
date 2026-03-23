@@ -42,10 +42,15 @@ export function pathFromPublicationAndSlug(
   const pKey = publication.replace(/[^a-zA-Z]/g, "").toLowerCase();
   const s = slug.trim();
 
-  if (pKey === "faqpage" || pKey === "faqpages") {
+  // Studio / preview URLs may use apiId "Faq" → "faq" (not only FaqPage → faqpage).
+  if (
+    pKey === "faq" ||
+    pKey === "faqpage" ||
+    pKey === "faqpages"
+  ) {
     return "/faq";
   }
-  if (pKey === "homepage" || pKey === "homepages") {
+  if (pKey === "home" || pKey === "homepage" || pKey === "homepages") {
     return "/";
   }
   if (pKey === "landingpage" || pKey === "landingpages") {
@@ -132,6 +137,15 @@ export async function resolvePreviewPathname(
   }
 
   if (pub && s) {
+    // Avoid /faq/faq when publication and slug are the same segment (Hygraph templates).
+    if (pub.toLowerCase() === s.toLowerCase()) {
+      if (pub.toLowerCase() === "faq") {
+        return "/faq";
+      }
+      if (pub.toLowerCase() === "home") {
+        return "/";
+      }
+    }
     const composed = `/${pub}/${s}`.replace(/\/+/g, "/");
     if (!/^[A-Z]/.test(pub)) {
       return composed;
