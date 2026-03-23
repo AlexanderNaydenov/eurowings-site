@@ -3,16 +3,32 @@ import { Link } from "@/i18n/navigation";
 import { normalizeInternalHref } from "@/lib/internal-link";
 import type { SplitBannerContentBlock } from "@/lib/types";
 
-function BannerCta({ cta }: { cta: NonNullable<SplitBannerContentBlock["cta"]> }) {
-  const className = `inline-flex w-fit items-center rounded-full px-8 py-3.5 text-center text-base font-bold transition-colors ${
-    cta.variant === "PRIMARY"
-      ? "bg-ew-primary text-white hover:bg-ew-primary-dark"
-      : cta.variant === "SECONDARY"
-        ? "bg-ew-accent text-ew-dark hover:bg-amber-400"
-        : cta.variant === "OUTLINE"
-          ? "border-2 border-ew-primary text-ew-primary hover:bg-ew-primary hover:text-white"
-          : "font-semibold text-ew-primary underline-offset-4 hover:underline"
-  }`;
+function BannerCta({
+  cta,
+  brandPanel,
+}: {
+  cta: NonNullable<SplitBannerContentBlock["cta"]>;
+  brandPanel: boolean;
+}) {
+  const className = brandPanel
+    ? `inline-flex w-fit items-center rounded-full px-8 py-3.5 text-center text-base font-bold transition-colors ${
+        cta.variant === "PRIMARY"
+          ? "bg-white text-ew-primary hover:bg-white/90"
+          : cta.variant === "SECONDARY"
+            ? "bg-ew-accent text-ew-dark hover:bg-amber-400"
+            : cta.variant === "OUTLINE"
+              ? "border-2 border-white text-white hover:bg-white/10"
+              : "font-semibold text-white underline decoration-white/70 underline-offset-4 hover:decoration-white"
+      }`
+    : `inline-flex w-fit items-center rounded-full px-8 py-3.5 text-center text-base font-bold transition-colors ${
+        cta.variant === "PRIMARY"
+          ? "bg-ew-primary text-white hover:bg-ew-primary-dark"
+          : cta.variant === "SECONDARY"
+            ? "bg-ew-accent text-ew-dark hover:bg-amber-400"
+            : cta.variant === "OUTLINE"
+              ? "border-2 border-ew-primary text-ew-primary hover:bg-ew-primary hover:text-white"
+              : "font-semibold text-ew-primary underline-offset-4 hover:underline"
+      }`;
 
   const attrs = {
     "data-hygraph-entry-id": cta.id,
@@ -53,6 +69,19 @@ type Props = {
 export default function ContentBlockBanner({ block, embedded }: Props) {
   const eid = block.id;
   const imageOnLeft = block.imageSide !== "RIGHT";
+  const brandPanel = block.panelStyle === "BRAND";
+
+  const textColClass = brandPanel
+    ? "flex w-full flex-col justify-center bg-gradient-to-br from-[#7A0344] via-[#A1045A] to-[#0088aa] px-6 py-10 sm:px-10 lg:w-1/2 lg:px-14 lg:py-12"
+    : "flex w-full flex-col justify-center bg-ew-light px-6 py-10 sm:px-10 lg:w-1/2 lg:px-14 lg:py-12";
+
+  const titleClass = brandPanel
+    ? "text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl"
+    : "text-3xl font-extrabold leading-tight tracking-tight text-ew-dark sm:text-4xl";
+
+  const subClass = brandPanel
+    ? "mt-4 max-w-xl text-lg leading-relaxed text-white/85"
+    : "mt-4 max-w-xl text-lg leading-relaxed text-ew-grey";
 
   const inner = (
     <div
@@ -77,27 +106,18 @@ export default function ContentBlockBanner({ block, embedded }: Props) {
         )}
       </div>
 
-      <div
-        className="flex w-full flex-col justify-center bg-ew-light px-6 py-10 sm:px-10 lg:w-1/2 lg:px-14 lg:py-12"
-        data-hygraph-entry-id={eid}
-      >
-        <h2
-          className="text-3xl font-extrabold leading-tight tracking-tight text-ew-dark sm:text-4xl"
-          data-hygraph-field-api-id="title"
-        >
+      <div className={textColClass} data-hygraph-entry-id={eid} data-hygraph-field-api-id="panelStyle">
+        <h2 className={titleClass} data-hygraph-field-api-id="title">
           {block.title}
         </h2>
         {block.subheading && (
-          <p
-            className="mt-4 max-w-xl text-lg leading-relaxed text-ew-grey"
-            data-hygraph-field-api-id="subheading"
-          >
+          <p className={subClass} data-hygraph-field-api-id="subheading">
             {block.subheading}
           </p>
         )}
         {block.cta && (
           <div className="mt-8">
-            <BannerCta cta={block.cta} />
+            <BannerCta cta={block.cta} brandPanel={brandPanel} />
           </div>
         )}
       </div>
@@ -113,7 +133,10 @@ export default function ContentBlockBanner({ block, embedded }: Props) {
   }
 
   return (
-    <section className="w-full border-y border-black/5 bg-ew-light" aria-label={block.title}>
+    <section
+      className={`w-full border-y border-black/5 ${brandPanel ? "bg-[#7A0344]" : "bg-ew-light"}`}
+      aria-label={block.title}
+    >
       <div className="mx-auto max-w-7xl">{inner}</div>
     </section>
   );

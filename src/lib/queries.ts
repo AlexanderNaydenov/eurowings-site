@@ -21,7 +21,7 @@ export const GET_HOMEPAGE = `
         image { url }
       }
       bannerContentBlocks(orderBy: sortOrder_ASC, first: 10) {
-        id title subheading imageSide sortOrder
+        id title subheading imageSide panelStyle sortOrder
         image { url }
         cta { id label url variant openInNewTab }
       }
@@ -134,7 +134,7 @@ export const GET_LANDING_PAGE = `
           image { url }
         }
         ... on ContentBlock {
-          __typename id title subheading imageSide sortOrder
+          __typename id title subheading imageSide panelStyle sortOrder
           image { url }
           cta { id label url variant openInNewTab }
         }

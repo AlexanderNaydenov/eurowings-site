@@ -144,6 +144,8 @@ export interface SplitBannerContentBlock {
   title: string;
   subheading?: string;
   imageSide?: "LEFT" | "RIGHT";
+  /** Hygraph: neutral grey vs magenta/cyan brand gradient on text column */
+  panelStyle?: "NEUTRAL" | "BRAND";
   sortOrder?: number;
   image?: Asset;
   cta?: CtaButton | null;
