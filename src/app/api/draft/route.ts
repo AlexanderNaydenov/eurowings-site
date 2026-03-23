@@ -1,10 +1,18 @@
 import { draftMode, cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  resolvePreviewPathname,
+  pathFromPublicationAndSlug,
+  withLocalePrefix,
+} from "@/lib/resolve-preview-path";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const publication = searchParams.get("publication") || "";
   const slug = searchParams.get("slug") || "";
+  /** Hygraph App / preview URL can send model apiId separately from publication */
+  const model = searchParams.get("model") || searchParams.get("__typename") || "";
+  const locale = searchParams.get("locale");
   const secret = searchParams.get("secret");
 
   const expectedSecret = process.env.HYGRAPH_PREVIEW_SECRET;
@@ -29,11 +37,16 @@ export async function GET(request: Request) {
     });
   }
 
-  const path = publication
-    ? `/${publication}/${slug}`.replace(/\/+/g, "/")
-    : slug
-    ? `/${slug}`
-    : "/";
+  let path: string;
+
+  const fromModel = model ? pathFromPublicationAndSlug(model, slug) : null;
+  if (fromModel) {
+    path = fromModel;
+  } else {
+    path = await resolvePreviewPathname(publication, slug);
+  }
+
+  path = withLocalePrefix(path, locale);
 
   redirect(`${path}?preview=true`);
 }
