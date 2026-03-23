@@ -30,7 +30,9 @@ export function PreviewWrapper({ children }: { children: React.ReactNode }) {
         style: { borderColor: "#A1045A", borderWidth: "2px" },
         button: { backgroundColor: "#A1045A", color: "white" },
       }}
-      sync={{ fieldFocus: true, fieldUpdate: false }}
+      // fieldUpdate must be true so Studio sends "field-update" messages and the
+      // preview iframe reflects edits side-by-side (see Preview SDK capabilities / fieldUpdateSync).
+      sync={{ fieldFocus: true, fieldUpdate: true }}
     >
       {children}
     </HygraphPreview>

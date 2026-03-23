@@ -34,6 +34,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the site.
 
+### Hygraph side-by-side preview
+
+Studio’s preview iframe talks to the site via the Preview SDK. **`sync.fieldUpdate`** must be **`true`** (set in `PreviewWrapper.tsx`) so Hygraph advertises `fieldUpdateSync` and pushes **field-update** messages while you edit; otherwise the iframe only updates after a full navigation or new tab.
+
+After **Save**, `router.refresh()` runs so server components refetch draft content. Published-only changes still follow your [on-demand revalidation](./docs/on-demand-revalidation.md) flow in a normal browser tab.
+
 ## Pages
 
 | Route | Description |
