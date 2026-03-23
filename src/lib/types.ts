@@ -81,6 +81,16 @@ export interface Airport {
   countryCode?: string;
 }
 
+/** Promo strip + linked destination collection (Hygraph TopBanner) */
+export interface TopBanner {
+  id: string;
+  title: string;
+  slug: string;
+  ctaLabel?: string | null;
+  isActive?: boolean | null;
+  featuredDestinations?: DestinationPage[];
+}
+
 export interface DestinationPage {
   id: string;
   __typename?: "DestinationPage";

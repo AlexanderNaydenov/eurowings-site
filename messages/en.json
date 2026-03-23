@@ -5,7 +5,9 @@
     "destinationsTitle": "Destinations – Eurowings",
     "destinationsDescription": "Explore all Eurowings destinations across Europe and beyond.",
     "faqTitle": "FAQ – Eurowings",
-    "faqDescription": "Find answers to your questions about flights, baggage, rebooking, and more."
+    "faqDescription": "Find answers to your questions about flights, baggage, rebooking, and more.",
+    "collectionFallbackTitle": "Destination collection – Eurowings",
+    "collectionDescription": "Explore featured Eurowings destinations: {title}"
   },
   "nav": {
     "home": "Home",
@@ -101,5 +103,9 @@
   },
   "destinationCard": {
     "flightsFrom": "Flights from"
+  },
+  "collection": {
+    "intro": "Selected destinations for this offer. Choose a card for details and fares.",
+    "empty": "No destinations in this collection yet."
   }
 }

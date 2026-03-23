@@ -133,3 +133,43 @@ export const GET_ALL_LANDING_PAGE_SLUGS = `
     }
   }
 `;
+
+export const GET_ACTIVE_TOP_BANNER = `
+  query GetActiveTopBanner($stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    topBanners(where: { isActive: true }, first: 1, stage: $stage, locales: $locales) {
+      id
+      title
+      slug
+      ctaLabel
+    }
+  }
+`;
+
+export const GET_ALL_TOP_BANNER_SLUGS = `
+  query GetAllTopBannerSlugs {
+    topBanners(stage: PUBLISHED, first: 50, locales: [en]) {
+      slug
+    }
+  }
+`;
+
+export const GET_TOP_BANNER_COLLECTION = `
+  query GetTopBannerCollection($slug: String!, $stage: Stage! = PUBLISHED, $locales: [Locale!]!) {
+    topBanner(where: { slug: $slug }, stage: $stage, locales: $locales) {
+      id
+      title
+      slug
+      ctaLabel
+      isActive
+      featuredDestinations {
+        id
+        title
+        slug
+        startingPrice
+        currency
+        coverImage { url }
+        airport { id name iataCode city country }
+      }
+    }
+  }
+`;

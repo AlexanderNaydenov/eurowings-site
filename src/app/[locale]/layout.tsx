@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
+import SiteTopBanner from "@/components/SiteTopBanner";
 import NewsTicker from "@/components/NewsTicker";
 import Footer from "@/components/Footer";
 import { PreviewWrapper } from "@/components/PreviewWrapper";
@@ -47,6 +48,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className={`${inter.className} bg-ew-light`}>
         <NextIntlClientProvider messages={messages}>
           <PreviewWrapper>
+            <SiteTopBanner locale={locale} />
             <Header />
             <NewsTicker />
             <main className="min-h-screen">{children}</main>

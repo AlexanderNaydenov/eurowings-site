@@ -49,6 +49,7 @@ After **Save**, `router.refresh()` runs so server components refetch draft conte
 | `/destinations/[slug]` | Individual destination page |
 | `/faq` | FAQ page with accordion categories |
 | `/pages/[slug]` | Flexible landing pages |
+| `/collections/[slug]` | Curated destination list (from Top Banner in Hygraph) |
 
 ## Tech Stack
 

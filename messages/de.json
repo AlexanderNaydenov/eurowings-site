@@ -5,7 +5,9 @@
     "destinationsTitle": "Reiseziele – Eurowings",
     "destinationsDescription": "Entdecke alle Eurowings-Reiseziele in Europa und darüber hinaus.",
     "faqTitle": "FAQ – Eurowings",
-    "faqDescription": "Antworten auf deine Fragen zu Flügen, Gepäck, Umbuchung und mehr."
+    "faqDescription": "Antworten auf deine Fragen zu Flügen, Gepäck, Umbuchung und mehr.",
+    "collectionFallbackTitle": "Zielkollektion – Eurowings",
+    "collectionDescription": "Eurowings-Ziele im Überblick: {title}"
   },
   "nav": {
     "home": "Startseite",
@@ -101,5 +103,9 @@
   },
   "destinationCard": {
     "flightsFrom": "Flüge ab"
+  },
+  "collection": {
+    "intro": "Ausgewählte Ziele für dieses Angebot. Karte wählen für Details und Preise.",
+    "empty": "In dieser Kollektion sind noch keine Ziele hinterlegt."
   }
 }
