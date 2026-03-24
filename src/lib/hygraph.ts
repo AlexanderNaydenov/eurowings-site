@@ -29,17 +29,10 @@ export async function hygraphFetch<T>(
     headers.Pragma = "no-cache";
   }
 
-  // Unique comment per request so intermediaries cannot return a stale POST response
-  // for the same query shape while Studio is saving draft (Save & Preview).
-  const queryForRequest =
-    isDraft && query.trim().length > 0
-      ? `${query.trim()}\n#draft:${Date.now()}`
-      : query;
-
   const res = await fetch(HYGRAPH_ENDPOINT, {
     method: "POST",
     headers,
-    body: JSON.stringify({ query: queryForRequest, variables }),
+    body: JSON.stringify({ query, variables }),
     ...(isDraft
       ? { cache: "no-store" as const }
       : { next: { revalidate: 60, tags: [HYGRAPH_CACHE_TAG] } }),
@@ -47,9 +40,18 @@ export async function hygraphFetch<T>(
 
   const json = await res.json();
 
-  if (json.errors) {
+  if (!res.ok) {
+    console.error("Hygraph HTTP error:", res.status, JSON.stringify(json, null, 2));
+    throw new Error(`Hygraph request failed (${res.status})`);
+  }
+
+  // GraphQL can return both `errors` (e.g. per-field) and partial `data`. Only fail
+  // when there is no usable payload — otherwise promos/relations can disappear in preview.
+  if (json.errors?.length) {
     console.error("Hygraph error:", JSON.stringify(json.errors, null, 2));
-    throw new Error(json.errors[0]?.message || "Hygraph query failed");
+  }
+  if (json.data == null) {
+    throw new Error(json.errors?.[0]?.message || "Hygraph query failed");
   }
 
   return json.data;
