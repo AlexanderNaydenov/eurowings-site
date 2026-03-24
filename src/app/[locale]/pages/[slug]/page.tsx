@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
 import { draftMode } from "next/headers";
 import { setRequestLocale } from "next-intl/server";
@@ -17,6 +18,8 @@ import DestinationCard from "@/components/DestinationCard";
 import PreviewBanner from "@/components/PreviewBanner";
 import { Link } from "@/i18n/navigation";
 import { normalizeInternalHref } from "@/lib/internal-link";
+
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
@@ -129,14 +132,19 @@ export default async function LandingPageRoute({ params }: Props) {
   setRequestLocale(locale);
 
   const { isEnabled: isDraft } = draftMode();
+  if (isDraft) {
+    noStore();
+  }
   const page = await getPage(slug, isDraft, locale);
   if (!page) notFound();
+
+  const hero = page.heroBannerComponent ?? page.heroBanner;
 
   return (
     <>
       {isDraft && <PreviewBanner />}
 
-      {page.heroBanner && <HeroBanner hero={page.heroBanner} compact />}
+      {hero && <HeroBanner hero={hero} compact />}
 
       <FlightSearchPanel />
 

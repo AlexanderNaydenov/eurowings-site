@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { normalizeInternalHref } from "@/lib/internal-link";
-import type { Service } from "@/lib/types";
+import type { Service, ServiceTile } from "@/lib/types";
 
 const ICON_PATHS: Record<string, string> = {
   baggage: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z",
@@ -27,7 +27,7 @@ function ServiceIcon({ iconKey }: { iconKey?: string }) {
   );
 }
 
-function CardInner({ service }: { service: Service }) {
+function CardInner({ service }: { service: Service | ServiceTile }) {
   const eid = service.id;
 
   return (
@@ -76,7 +76,7 @@ function CardInner({ service }: { service: Service }) {
   );
 }
 
-export default function ServiceCard({ service }: { service: Service }) {
+export default function ServiceCard({ service }: { service: Service | ServiceTile }) {
   const className =
     "group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:border-ew-primary/20 hover:shadow-md";
 

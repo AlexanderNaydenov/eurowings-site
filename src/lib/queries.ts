@@ -5,29 +5,51 @@ export const GET_HOMEPAGE = `
       title
       slug
       seo { metaTitle metaDescription ogImage noIndex }
-      heroBanner {
+      heroBanner(forceParentLocale: true) {
         id
         heading
         subheading
         backgroundImage { url }
         cta { id label url variant openInNewTab }
       }
-      promoCards {
+      heroBannerComponent(forceParentLocale: true) {
+        id
+        heading
+        subheading
+        backgroundImage { url }
+        cta { id label url variant openInNewTab }
+      }
+      promoCards(first: 20, forceParentLocale: true) {
         id heading description priceFrom currency linkUrl linkLabel
         image { url }
       }
-      services(orderBy: sortOrder_ASC, first: 20) {
-        id title teaser iconKey linkUrl linkLabel sortOrder
-        image { url }
+      belowSearchBlocks(first: 30, forceParentLocale: true) {
+        __typename
+        ... on Service {
+          id title teaser iconKey linkUrl linkLabel sortOrder
+          image { url }
+        }
+        ... on ContentBlock {
+          id title subheading imageSide panelStyle sortOrder
+          image { url }
+          cta { id label url variant openInNewTab }
+        }
       }
-      bannerContentBlocks(orderBy: sortOrder_ASC, first: 10) {
-        id title subheading imageSide panelStyle sortOrder
-        image { url }
-        cta { id label url variant openInNewTab }
+      belowSearchComposition(first: 30, forceParentLocale: true) {
+        __typename
+        ... on ServiceTile {
+          id title teaser iconKey linkUrl linkLabel sortOrder
+          image { url }
+        }
+        ... on SplitBannerBlock {
+          id title subheading imageSide panelStyle sortOrder
+          image { url }
+          cta { id label url variant openInNewTab }
+        }
       }
-      contentSections { id heading body { html } imageUrl }
-      legalNotes { id title identifier content { html } }
-      featuredDestinations {
+      contentSections(forceParentLocale: true) { id heading body { html } imageUrl }
+      legalNotes(forceParentLocale: true) { id title identifier content { html } }
+      featuredDestinations(forceParentLocale: true) {
         id title slug startingPrice currency
         coverImage { url }
         airport { id name iataCode }
@@ -104,15 +126,22 @@ export const GET_LANDING_PAGE = `
       title
       slug
       seo { metaTitle metaDescription ogImage noIndex }
-      heroBanner {
+      heroBanner(forceParentLocale: true) {
         id
         heading
         subheading
         backgroundImage { url }
         cta { id label url variant openInNewTab }
       }
-      contentSections { id heading body { html } imageUrl }
-      contentBlocks {
+      heroBannerComponent(forceParentLocale: true) {
+        id
+        heading
+        subheading
+        backgroundImage { url }
+        cta { id label url variant openInNewTab }
+      }
+      contentSections(forceParentLocale: true) { id heading body { html } imageUrl }
+      contentBlocks(forceParentLocale: true) {
         ... on Promotion {
           __typename id heading description priceFrom currency linkUrl linkLabel
           image { url }
@@ -139,7 +168,7 @@ export const GET_LANDING_PAGE = `
           cta { id label url variant openInNewTab }
         }
       }
-      legalNotes { id title identifier content { html } }
+      legalNotes(forceParentLocale: true) { id title identifier content { html } }
     }
   }
 `;

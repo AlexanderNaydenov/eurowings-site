@@ -24,10 +24,22 @@ export async function hygraphFetch<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
+  if (isDraft) {
+    headers["Cache-Control"] = "no-cache";
+    headers.Pragma = "no-cache";
+  }
+
+  // Unique comment per request so intermediaries cannot return a stale POST response
+  // for the same query shape while Studio is saving draft (Save & Preview).
+  const queryForRequest =
+    isDraft && query.trim().length > 0
+      ? `${query.trim()}\n#draft:${Date.now()}`
+      : query;
+
   const res = await fetch(HYGRAPH_ENDPOINT, {
     method: "POST",
     headers,
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query: queryForRequest, variables }),
     ...(isDraft
       ? { cache: "no-store" as const }
       : { next: { revalidate: 60, tags: [HYGRAPH_CACHE_TAG] } }),

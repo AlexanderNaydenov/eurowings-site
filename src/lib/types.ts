@@ -33,6 +33,19 @@ export interface Service {
   image?: Asset;
 }
 
+/** Same shape as `Service`, embedded as **ServiceTile** component on Homepage / Landing */
+export interface ServiceTile {
+  id: string;
+  __typename?: "ServiceTile";
+  title: string;
+  teaser?: string;
+  iconKey?: string;
+  linkUrl?: string;
+  linkLabel?: string;
+  sortOrder?: number;
+  image?: Asset;
+}
+
 export interface Promotion {
   id: string;
   __typename?: "Promotion";
@@ -122,25 +135,36 @@ export interface DestinationPage {
   relatedDestinations?: DestinationPage[];
 }
 
+/** Union from Homepage `belowSearchBlocks` / `belowSearchComposition` — order matches CMS */
+export type HomeBelowSearchBlock =
+  | (Service & { __typename: "Service" })
+  | (ServiceTile & { __typename: "ServiceTile" })
+  | (SplitBannerContentBlock & { __typename: "ContentBlock" })
+  | (SplitBannerContentBlock & { __typename: "SplitBannerBlock" });
+
 export interface Homepage {
   id: string;
   title: string;
   slug?: string;
   seo?: SeoMetadata;
+  /** Legacy HeroSection entry; prefer `heroBannerComponent` when set */
   heroBanner?: HeroSection;
+  /** Embedded hero (**HeroSectionBlock** component) */
+  heroBannerComponent?: HeroSection;
   promoCards?: Promotion[];
   contentSections?: ContentSectionData[];
   legalNotes?: Disclaimer[];
   featuredDestinations?: DestinationPage[];
-  services?: Service[];
-  /** Hygraph model ContentBlock — split image + text + CTA (e.g. under flight search) */
-  bannerContentBlocks?: SplitBannerContentBlock[];
+  /** Services and split banners in one ordered list under flight search */
+  belowSearchBlocks?: HomeBelowSearchBlock[];
+  /** Component union (ServiceTile | SplitBannerBlock); prefer when set */
+  belowSearchComposition?: HomeBelowSearchBlock[];
 }
 
-/** Hygraph `ContentBlock` model (split full-width promo banner) */
+/** Hygraph `ContentBlock` model or **SplitBannerBlock** component (split full-width promo banner) */
 export interface SplitBannerContentBlock {
   id: string;
-  __typename?: "ContentBlock";
+  __typename?: "ContentBlock" | "SplitBannerBlock";
   title: string;
   subheading?: string;
   imageSide?: "LEFT" | "RIGHT";
@@ -193,6 +217,7 @@ export interface LandingPage {
   slug: string;
   seo?: SeoMetadata;
   heroBanner?: HeroSection;
+  heroBannerComponent?: HeroSection;
   contentSections?: ContentSectionData[];
   contentBlocks?: LandingBodyBlock[];
   legalNotes?: Disclaimer[];

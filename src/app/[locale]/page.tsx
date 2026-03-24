@@ -1,9 +1,10 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { draftMode } from "next/headers";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { hygraphFetch } from "@/lib/hygraph";
 import { hygraphLocales } from "@/lib/hygraph-locales";
 import { GET_HOMEPAGE } from "@/lib/queries";
-import type { Homepage } from "@/lib/types";
+import type { HomeBelowSearchBlock, Homepage } from "@/lib/types";
 import HeroBanner from "@/components/HeroBanner";
 import FlightSearchPanel from "@/components/FlightSearchPanel";
 import ContentBlockBanner from "@/components/ContentBlockBanner";
@@ -13,7 +14,55 @@ import DestinationCard from "@/components/DestinationCard";
 import ContentSection from "@/components/ContentSection";
 import PreviewBanner from "@/components/PreviewBanner";
 
+/** Avoid serving a static RSC tree that ignores draft / Hygraph DRAFT after Save & Preview. */
+export const dynamic = "force-dynamic";
+
 type Props = { params: Promise<{ locale: string }> };
+
+type BelowSearchChunk =
+  | {
+      kind: "banner";
+      block: HomeBelowSearchBlock & { __typename: "ContentBlock" | "SplitBannerBlock" };
+    }
+  | {
+      kind: "services";
+      items: (HomeBelowSearchBlock & { __typename: "Service" | "ServiceTile" })[];
+    };
+
+function isSplitBannerBlock(
+  b: HomeBelowSearchBlock
+): b is HomeBelowSearchBlock & { __typename: "ContentBlock" | "SplitBannerBlock" } {
+  return b.__typename === "ContentBlock" || b.__typename === "SplitBannerBlock";
+}
+
+function isServiceBelowBlock(
+  b: HomeBelowSearchBlock
+): b is HomeBelowSearchBlock & { __typename: "Service" | "ServiceTile" } {
+  return b.__typename === "Service" || b.__typename === "ServiceTile";
+}
+
+function chunkBelowSearchBlocks(blocks: HomeBelowSearchBlock[]): BelowSearchChunk[] {
+  const chunks: BelowSearchChunk[] = [];
+  let serviceBuf: (HomeBelowSearchBlock & { __typename: "Service" | "ServiceTile" })[] = [];
+
+  const flushServices = () => {
+    if (serviceBuf.length > 0) {
+      chunks.push({ kind: "services", items: [...serviceBuf] });
+      serviceBuf = [];
+    }
+  };
+
+  for (const b of blocks) {
+    if (isSplitBannerBlock(b)) {
+      flushServices();
+      chunks.push({ kind: "banner", block: b });
+    } else if (isServiceBelowBlock(b)) {
+      serviceBuf.push(b);
+    }
+  }
+  flushServices();
+  return chunks;
+}
 
 async function getHomepage(isDraft: boolean, locale: string) {
   try {
@@ -36,14 +85,22 @@ export default async function HomePage({ params }: Props) {
   const t = await getTranslations("home");
 
   const { isEnabled: isDraft } = draftMode();
+  if (isDraft) {
+    noStore();
+  }
   const page = await getHomepage(isDraft, locale);
+  const hero = page?.heroBannerComponent ?? page?.heroBanner;
+  const belowBlocks =
+    page?.belowSearchComposition && page.belowSearchComposition.length > 0
+      ? page.belowSearchComposition
+      : page?.belowSearchBlocks;
 
   return (
     <>
       {isDraft && <PreviewBanner />}
 
-      {page?.heroBanner ? (
-        <HeroBanner hero={page.heroBanner} />
+      {hero ? (
+        <HeroBanner hero={hero} />
       ) : (
         <section className="relative flex h-[34rem] items-center overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-ew-primary-dark via-ew-primary to-ew-primary-light" />
@@ -63,25 +120,30 @@ export default async function HomePage({ params }: Props) {
 
       <FlightSearchPanel />
 
-      {page?.bannerContentBlocks && page.bannerContentBlocks.length > 0 && (
-        <div className="space-y-0">
-          {page.bannerContentBlocks.map((block) => (
-            <ContentBlockBanner key={block.id} block={block} />
-          ))}
-        </div>
-      )}
-
-      {page?.services && page.services.length > 0 && (
-        <section className="border-y border-gray-100 bg-white py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("servicesHeading")}</h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {page.services.map((svc) => (
-                <ServiceCard key={svc.id} service={svc} />
-              ))}
-            </div>
-          </div>
-        </section>
+      {belowBlocks && belowBlocks.length > 0 && (
+        <>
+          {chunkBelowSearchBlocks(belowBlocks).map((chunk) =>
+            chunk.kind === "banner" ? (
+              <div key={chunk.block.id} className="space-y-0">
+                <ContentBlockBanner block={chunk.block} />
+              </div>
+            ) : (
+              <section
+                key={`services-${chunk.items.map((s) => s.id).join("-")}`}
+                className="border-y border-gray-100 bg-white py-12"
+              >
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                  <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("servicesHeading")}</h2>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {chunk.items.map((svc) => (
+                      <ServiceCard key={svc.id} service={svc} />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )
+          )}
+        </>
       )}
 
       {page?.promoCards && page.promoCards.length > 0 && (

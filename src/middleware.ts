@@ -22,7 +22,16 @@ export default function middleware(request: NextRequest) {
     url.pathname = target;
     return NextResponse.redirect(url);
   }
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  // Next.js draft / preview uses this cookie. Without no-store, a CDN or the RSC
+  // client can keep serving a cached document that still reflects PUBLISHED data.
+  if (request.cookies.get("__prerender_bypass")?.value) {
+    response.headers.set(
+      "Cache-Control",
+      "private, no-cache, no-store, max-age=0, must-revalidate"
+    );
+  }
+  return response;
 }
 
 export const config = {
