@@ -11,7 +11,6 @@ import HeroBanner from "@/components/HeroBanner";
 import FlightSearchPanel from "@/components/FlightSearchPanel";
 import ContentSection from "@/components/ContentSection";
 import PromoCard from "@/components/PromoCard";
-import ServiceCard from "@/components/ServiceCard";
 import ContentBlockBanner from "@/components/ContentBlockBanner";
 import FlightOfferCard from "@/components/FlightOfferCard";
 import DestinationCard from "@/components/DestinationCard";
@@ -80,8 +79,6 @@ function ContentBlockRenderer({ block }: { block: LandingBodyBlock }) {
       );
     case "Promotion":
       return <PromoCard promo={block} />;
-    case "Service":
-      return <ServiceCard service={block} />;
     case "FlightOffer":
       return (
         <FlightOfferCard offer={{ ...block, title: raw.offerTitle ?? block.title }} />

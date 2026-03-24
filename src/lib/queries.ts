@@ -132,10 +132,6 @@ export const GET_LANDING_PAGE = `
           coverImage { url }
           airport { id name iataCode }
         }
-        ... on Service {
-          __typename id title teaser iconKey linkUrl linkLabel sortOrder
-          image { url }
-        }
         ... on ContentBlock {
           __typename id title subheading imageSide panelStyle sortOrder
           image { url }

@@ -204,7 +204,6 @@ export type LandingBodyBlock =
   | (FlightOffer & { __typename: "FlightOffer" })
   | (CtaButton & { __typename: "CtaButton" })
   | (DestinationPage & { __typename: "DestinationPage" })
-  | (Service & { __typename: "Service" })
   | (SplitBannerContentBlock & { __typename: "ContentBlock" });
 
 export interface LandingPage {
