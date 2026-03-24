@@ -135,7 +135,7 @@ export interface DestinationPage {
   relatedDestinations?: DestinationPage[];
 }
 
-/** Union from Homepage `belowSearchBlocks` / `belowSearchComposition` — order matches CMS */
+/** Union from Homepage `belowSearchComposition` — order matches CMS */
 export type HomeBelowSearchBlock =
   | (Service & { __typename: "Service" })
   | (ServiceTile & { __typename: "ServiceTile" })
@@ -147,17 +147,13 @@ export interface Homepage {
   title: string;
   slug?: string;
   seo?: SeoMetadata;
-  /** Legacy HeroSection entry; prefer `heroBannerComponent` when set */
-  heroBanner?: HeroSection;
   /** Embedded hero (**HeroSectionBlock** component) */
   heroBannerComponent?: HeroSection;
   promoCards?: Promotion[];
   contentSections?: ContentSectionData[];
   legalNotes?: Disclaimer[];
   featuredDestinations?: DestinationPage[];
-  /** Services and split banners in one ordered list under flight search */
-  belowSearchBlocks?: HomeBelowSearchBlock[];
-  /** Component union (ServiceTile | SplitBannerBlock); prefer when set */
+  /** Component union (ServiceTile | SplitBannerBlock) under flight search */
   belowSearchComposition?: HomeBelowSearchBlock[];
 }
 
@@ -216,7 +212,6 @@ export interface LandingPage {
   title: string;
   slug: string;
   seo?: SeoMetadata;
-  heroBanner?: HeroSection;
   heroBannerComponent?: HeroSection;
   contentSections?: ContentSectionData[];
   contentBlocks?: LandingBodyBlock[];

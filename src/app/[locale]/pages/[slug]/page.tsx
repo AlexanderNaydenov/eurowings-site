@@ -57,7 +57,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
   const page = await getPage(slug, false, locale);
   return {
-    title: page?.seo?.metaTitle || `${page?.title} – Eurowings`,
+    title:
+      page?.seo?.metaTitle ||
+      (page?.title ? `${page.title} – Eurowings` : "Eurowings"),
     description: page?.seo?.metaDescription,
   };
 }
@@ -138,8 +140,8 @@ export default async function LandingPageRoute({ params }: Props) {
   const page = await getPage(slug, isDraft, locale);
   if (!page) notFound();
 
-  const hero = page.heroBannerComponent ?? page.heroBanner;
-  const heroFromEmbeddedComponent = !!page.heroBannerComponent;
+  const hero = page.heroBannerComponent;
+  const heroFromEmbeddedComponent = !!hero;
 
   return (
     <>

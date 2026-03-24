@@ -5,13 +5,6 @@ export const GET_HOMEPAGE = `
       title
       slug
       seo { metaTitle metaDescription ogImage noIndex }
-      heroBanner(forceParentLocale: true) {
-        id
-        heading
-        subheading
-        backgroundImage { url }
-        cta { id label url variant openInNewTab }
-      }
       heroBannerComponent(forceParentLocale: true) {
         id
         heading
@@ -22,18 +15,6 @@ export const GET_HOMEPAGE = `
       promoCards(first: 20, forceParentLocale: true) {
         id heading description priceFrom currency linkUrl linkLabel
         image { url }
-      }
-      belowSearchBlocks(first: 30, forceParentLocale: true) {
-        __typename
-        ... on Service {
-          id title teaser iconKey linkUrl linkLabel sortOrder
-          image { url }
-        }
-        ... on ContentBlock {
-          id title subheading imageSide panelStyle sortOrder
-          image { url }
-          cta { id label url variant openInNewTab }
-        }
       }
       belowSearchComposition(first: 30, forceParentLocale: true) {
         __typename
@@ -126,13 +107,6 @@ export const GET_LANDING_PAGE = `
       title
       slug
       seo { metaTitle metaDescription ogImage noIndex }
-      heroBanner(forceParentLocale: true) {
-        id
-        heading
-        subheading
-        backgroundImage { url }
-        cta { id label url variant openInNewTab }
-      }
       heroBannerComponent(forceParentLocale: true) {
         id
         heading

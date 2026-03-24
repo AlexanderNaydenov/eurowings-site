@@ -89,14 +89,10 @@ export default async function HomePage({ params }: Props) {
     noStore();
   }
   const page = await getHomepage(isDraft, locale);
-  const hero = page?.heroBannerComponent ?? page?.heroBanner;
-  const heroFromEmbeddedComponent = !!page?.heroBannerComponent;
-  const belowFromComposition = !!(
-    page?.belowSearchComposition && page.belowSearchComposition.length > 0
-  );
-  const belowBlocks = belowFromComposition
-    ? page!.belowSearchComposition!
-    : page?.belowSearchBlocks;
+  const hero = page?.heroBannerComponent;
+  const heroFromEmbeddedComponent = !!hero;
+  const belowBlocks = page?.belowSearchComposition;
+  const belowFromComposition = !!(belowBlocks && belowBlocks.length > 0);
 
   return (
     <>

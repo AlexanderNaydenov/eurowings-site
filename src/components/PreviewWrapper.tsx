@@ -23,7 +23,6 @@ function fieldUpdateNeedsFullReload(update: FieldUpdate): boolean {
   if (ft === "RELATION") return true;
   if (ft.includes("UNION")) return true;
   if (
-    update.fieldApiId === "belowSearchBlocks" ||
     update.fieldApiId === "belowSearchComposition" ||
     update.fieldApiId === "heroBannerComponent" ||
     update.fieldApiId === "contentBlocks"
