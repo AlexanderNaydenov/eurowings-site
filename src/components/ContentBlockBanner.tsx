@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { hygraphListComponentChain } from "@/lib/hygraph-visual";
 import { normalizeInternalHref } from "@/lib/internal-link";
 import type { SplitBannerContentBlock } from "@/lib/types";
 
@@ -60,14 +61,27 @@ type Props = {
   block: SplitBannerContentBlock;
   /** When inside landing page grid, parent adds column span */
   embedded?: boolean;
+  /** Homepage/Landing id when `block` is **SplitBannerBlock** inside a list field (belowSearchComposition / contentBlocks) */
+  visualParentEntryId?: string;
+  visualParentListFieldApiId?: "belowSearchComposition" | "contentBlocks";
 };
 
 /**
  * Hygraph **ContentBlock** model: full-width split layout (image left/right + title + CTA),
  * similar to the “Fly flexibly, fly relaxed” strip under search on eurowings.com.
  */
-export default function ContentBlockBanner({ block, embedded }: Props) {
-  const eid = block.id;
+export default function ContentBlockBanner({
+  block,
+  embedded,
+  visualParentEntryId,
+  visualParentListFieldApiId,
+}: Props) {
+  const chain =
+    visualParentEntryId && visualParentListFieldApiId
+      ? hygraphListComponentChain(visualParentListFieldApiId, block.id)
+      : undefined;
+  const eid = visualParentEntryId ?? block.id;
+  const chainProps = chain ? ({ "data-hygraph-component-chain": chain } as const) : {};
   const imageOnLeft = block.imageSide !== "RIGHT";
   const brandPanel = block.panelStyle === "BRAND";
 
@@ -91,6 +105,7 @@ export default function ContentBlockBanner({ block, embedded }: Props) {
         className="relative aspect-[4/3] w-full lg:aspect-auto lg:w-1/2 lg:min-h-[24rem]"
         data-hygraph-entry-id={eid}
         data-hygraph-field-api-id="image"
+        {...chainProps}
       >
         {block.image?.url ? (
           <Image
@@ -106,12 +121,27 @@ export default function ContentBlockBanner({ block, embedded }: Props) {
         )}
       </div>
 
-      <div className={textColClass} data-hygraph-entry-id={eid} data-hygraph-field-api-id="panelStyle">
-        <h2 className={titleClass} data-hygraph-field-api-id="title">
+      <div
+        className={textColClass}
+        data-hygraph-entry-id={eid}
+        data-hygraph-field-api-id="panelStyle"
+        {...chainProps}
+      >
+        <h2
+          className={titleClass}
+          data-hygraph-entry-id={eid}
+          data-hygraph-field-api-id="title"
+          {...chainProps}
+        >
           {block.title}
         </h2>
         {block.subheading && (
-          <p className={subClass} data-hygraph-field-api-id="subheading">
+          <p
+            className={subClass}
+            data-hygraph-entry-id={eid}
+            data-hygraph-field-api-id="subheading"
+            {...chainProps}
+          >
             {block.subheading}
           </p>
         )}

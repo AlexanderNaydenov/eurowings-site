@@ -1,15 +1,31 @@
 import type { HeroSection } from "@/lib/types";
+import { hygraphSingleComponentChain } from "@/lib/hygraph-visual";
 import { Link } from "@/i18n/navigation";
 
 interface Props {
   hero: HeroSection;
   compact?: boolean;
+  /**
+   * When the hero is **HeroSectionBlock** embedded on Homepage/Landing, pass the parent
+   * entry id and field api id so Visual Editor can resolve “Click to edit” (component chain).
+   * Omit when the hero is the legacy **HeroSection** relation (top-level entry id = hero.id).
+   */
+  parentEntryId?: string;
+  parentHeroFieldApiId?: "heroBannerComponent";
 }
 
-export default function HeroBanner({ hero, compact }: Props) {
+export default function HeroBanner({ hero, compact, parentEntryId, parentHeroFieldApiId }: Props) {
   const bgUrl = hero.backgroundImage?.url;
   const height = compact ? "h-72 md:h-80" : "h-[28rem] md:h-[34rem]";
-  const eid = hero.id;
+  const embedded =
+    parentEntryId && parentHeroFieldApiId
+      ? {
+          entryId: parentEntryId,
+          chain: hygraphSingleComponentChain(parentHeroFieldApiId, hero.id),
+        }
+      : null;
+  const eid = embedded?.entryId ?? hero.id;
+  const chain = embedded?.chain;
 
   const ctaClass =
     "mt-8 inline-block rounded-full bg-ew-accent px-8 py-3.5 text-base font-bold text-ew-dark shadow-lg transition-transform hover:scale-105";
@@ -22,6 +38,7 @@ export default function HeroBanner({ hero, compact }: Props) {
           style={{ backgroundImage: `url(${bgUrl})` }}
           data-hygraph-entry-id={eid}
           data-hygraph-field-api-id="backgroundImage"
+          {...(chain ? { "data-hygraph-component-chain": chain } : {})}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-ew-dark/80 via-ew-dark/50 to-transparent" />
         </div>
@@ -38,6 +55,7 @@ export default function HeroBanner({ hero, compact }: Props) {
             }`}
             data-hygraph-entry-id={eid}
             data-hygraph-field-api-id="heading"
+            {...(chain ? { "data-hygraph-component-chain": chain } : {})}
           >
             {hero.heading}
           </h1>
@@ -46,6 +64,7 @@ export default function HeroBanner({ hero, compact }: Props) {
               className="mt-4 text-lg text-white/80 md:text-xl"
               data-hygraph-entry-id={eid}
               data-hygraph-field-api-id="subheading"
+              {...(chain ? { "data-hygraph-component-chain": chain } : {})}
             >
               {hero.subheading}
             </p>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { normalizeInternalHref } from "@/lib/internal-link";
+import { hygraphListComponentChain } from "@/lib/hygraph-visual";
 import type { Service, ServiceTile } from "@/lib/types";
 
 const ICON_PATHS: Record<string, string> = {
@@ -27,8 +28,21 @@ function ServiceIcon({ iconKey }: { iconKey?: string }) {
   );
 }
 
-function CardInner({ service }: { service: Service | ServiceTile }) {
-  const eid = service.id;
+function CardInner({
+  service,
+  visualParentEntryId,
+  visualParentListFieldApiId,
+}: {
+  service: Service | ServiceTile;
+  visualParentEntryId?: string;
+  visualParentListFieldApiId?: "belowSearchComposition" | "contentBlocks";
+}) {
+  const chain =
+    visualParentEntryId && visualParentListFieldApiId
+      ? hygraphListComponentChain(visualParentListFieldApiId, service.id)
+      : undefined;
+  const eid = visualParentEntryId ?? service.id;
+  const chainProps = chain ? ({ "data-hygraph-component-chain": chain } as const) : {};
 
   return (
     <>
@@ -36,11 +50,17 @@ function CardInner({ service }: { service: Service | ServiceTile }) {
         className="relative flex h-36 shrink-0 items-center justify-center overflow-hidden bg-gradient-to-br from-ew-light to-white"
         data-hygraph-entry-id={eid}
         data-hygraph-field-api-id="image"
+        {...chainProps}
       >
         {service.image?.url ? (
           <Image src={service.image.url} alt="" fill className="object-cover" sizes="(max-width: 768px) 50vw, 200px" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center" data-hygraph-entry-id={eid} data-hygraph-field-api-id="iconKey">
+          <div
+            className="flex h-full w-full items-center justify-center"
+            data-hygraph-entry-id={eid}
+            data-hygraph-field-api-id="iconKey"
+            {...chainProps}
+          >
             <ServiceIcon iconKey={service.iconKey} />
           </div>
         )}
@@ -50,6 +70,7 @@ function CardInner({ service }: { service: Service | ServiceTile }) {
           className="text-base font-bold text-ew-dark group-hover:text-ew-primary"
           data-hygraph-entry-id={eid}
           data-hygraph-field-api-id="title"
+          {...chainProps}
         >
           {service.title}
         </h3>
@@ -58,6 +79,7 @@ function CardInner({ service }: { service: Service | ServiceTile }) {
             className="mt-1 line-clamp-2 text-sm text-ew-grey"
             data-hygraph-entry-id={eid}
             data-hygraph-field-api-id="teaser"
+            {...chainProps}
           >
             {service.teaser}
           </p>
@@ -67,6 +89,7 @@ function CardInner({ service }: { service: Service | ServiceTile }) {
             className="mt-auto pt-3 text-sm font-semibold text-ew-primary"
             data-hygraph-entry-id={eid}
             data-hygraph-field-api-id="linkLabel"
+            {...chainProps}
           >
             {service.linkLabel} &rarr;
           </span>
@@ -76,14 +99,24 @@ function CardInner({ service }: { service: Service | ServiceTile }) {
   );
 }
 
-export default function ServiceCard({ service }: { service: Service | ServiceTile }) {
+export default function ServiceCard({
+  service,
+  visualParentEntryId,
+  visualParentListFieldApiId,
+}: {
+  service: Service | ServiceTile;
+  visualParentEntryId?: string;
+  visualParentListFieldApiId?: "belowSearchComposition" | "contentBlocks";
+}) {
   const className =
     "group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-shadow hover:border-ew-primary/20 hover:shadow-md";
+
+  const innerProps = { service, visualParentEntryId, visualParentListFieldApiId };
 
   if (!service.linkUrl) {
     return (
       <div className={className}>
-        <CardInner service={service} />
+        <CardInner {...innerProps} />
       </div>
     );
   }
@@ -91,14 +124,14 @@ export default function ServiceCard({ service }: { service: Service | ServiceTil
   if (/^https?:\/\//i.test(service.linkUrl)) {
     return (
       <a href={service.linkUrl} className={className} rel="noopener noreferrer" target="_blank">
-        <CardInner service={service} />
+        <CardInner {...innerProps} />
       </a>
     );
   }
 
   return (
     <Link href={normalizeInternalHref(service.linkUrl)} className={className}>
-      <CardInner service={service} />
+      <CardInner {...innerProps} />
     </Link>
   );
 }

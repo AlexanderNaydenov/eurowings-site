@@ -90,17 +90,24 @@ export default async function HomePage({ params }: Props) {
   }
   const page = await getHomepage(isDraft, locale);
   const hero = page?.heroBannerComponent ?? page?.heroBanner;
-  const belowBlocks =
+  const heroFromEmbeddedComponent = !!page?.heroBannerComponent;
+  const belowFromComposition = !!(
     page?.belowSearchComposition && page.belowSearchComposition.length > 0
-      ? page.belowSearchComposition
-      : page?.belowSearchBlocks;
+  );
+  const belowBlocks = belowFromComposition
+    ? page!.belowSearchComposition!
+    : page?.belowSearchBlocks;
 
   return (
     <>
       {isDraft && <PreviewBanner />}
 
       {hero ? (
-        <HeroBanner hero={hero} />
+        <HeroBanner
+          hero={hero}
+          parentEntryId={heroFromEmbeddedComponent ? page!.id : undefined}
+          parentHeroFieldApiId={heroFromEmbeddedComponent ? "heroBannerComponent" : undefined}
+        />
       ) : (
         <section className="relative flex h-[34rem] items-center overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-ew-primary-dark via-ew-primary to-ew-primary-light" />
@@ -125,7 +132,13 @@ export default async function HomePage({ params }: Props) {
           {chunkBelowSearchBlocks(belowBlocks).map((chunk) =>
             chunk.kind === "banner" ? (
               <div key={chunk.block.id} className="space-y-0">
-                <ContentBlockBanner block={chunk.block} />
+                <ContentBlockBanner
+                  block={chunk.block}
+                  visualParentEntryId={belowFromComposition ? page!.id : undefined}
+                  visualParentListFieldApiId={
+                    belowFromComposition ? "belowSearchComposition" : undefined
+                  }
+                />
               </div>
             ) : (
               <section
@@ -136,7 +149,14 @@ export default async function HomePage({ params }: Props) {
                   <h2 className="mb-8 text-3xl font-bold text-ew-dark">{t("servicesHeading")}</h2>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {chunk.items.map((svc) => (
-                      <ServiceCard key={svc.id} service={svc} />
+                      <ServiceCard
+                        key={svc.id}
+                        service={svc}
+                        visualParentEntryId={belowFromComposition ? page!.id : undefined}
+                        visualParentListFieldApiId={
+                          belowFromComposition ? "belowSearchComposition" : undefined
+                        }
+                      />
                     ))}
                   </div>
                 </div>

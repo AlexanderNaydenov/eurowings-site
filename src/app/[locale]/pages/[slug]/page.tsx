@@ -139,12 +139,20 @@ export default async function LandingPageRoute({ params }: Props) {
   if (!page) notFound();
 
   const hero = page.heroBannerComponent ?? page.heroBanner;
+  const heroFromEmbeddedComponent = !!page.heroBannerComponent;
 
   return (
     <>
       {isDraft && <PreviewBanner />}
 
-      {hero && <HeroBanner hero={hero} compact />}
+      {hero && (
+        <HeroBanner
+          hero={hero}
+          compact
+          parentEntryId={heroFromEmbeddedComponent ? page.id : undefined}
+          parentHeroFieldApiId={heroFromEmbeddedComponent ? "heroBannerComponent" : undefined}
+        />
+      )}
 
       <FlightSearchPanel />
 
